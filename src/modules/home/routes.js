@@ -1,9 +1,7 @@
-import Home from './pages/Home';
-
-export default [
+module.exports = [
   {
+    name: 'home',
     path: '/home',
-    exact: true,
-    component: Home
+    url: 'src/modules/home/pages/Home'
   }
 ];

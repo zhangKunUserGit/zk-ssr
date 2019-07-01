@@ -1,13 +1,4 @@
-import App from './App.js';
-import homeRoutes from './modules/home/routes';
-import aboutRoutes from './modules/about/routes';
+const homeRoutes = require('./modules/home/routes');
+const aboutRoutes = require('./modules/about/routes');
 
-const routesConfig = [...homeRoutes, ...aboutRoutes];
-
-export const routes = [
-  {
-    component: App,
-    path: '/',
-    routes: [...routesConfig]
-  }
-];
+module.exports = [...homeRoutes, ...aboutRoutes];

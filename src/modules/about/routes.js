@@ -1,9 +1,7 @@
-import About from './pages/About';
-
-export default [
+module.exports = [
   {
+    name: 'about',
     path: '/about',
-    exact: true,
-    component: About
+    component: 'src/modules/about/pages/About'
   }
 ];

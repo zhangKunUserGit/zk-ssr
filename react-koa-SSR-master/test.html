@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul style="display: flex;">
+   <li style="flex: 1">A</li>
+   <li style="flex: 1">B</li>
+   <li style="flex: 1">C</li>
+   <li style="flex: 1">D</li>
+</ul>
+<script>
+  const arr = [1,3,6,9,5,1,3,6,4,7,9,10];
+  const cache={}, newArr=[];
+  //去重
+  for(let i = 0, l = arr.length, item; i < l; i++){
+    item = arr[i];
+    if (cache[item] !== item) {
+      cache[item] = item;
+      newArr.push(item);
+    }
+  }
+  // 排序
+  const result = newArr.sort((a, b) => a > b ? 1 : (a < b ? -1 : b - a));
+  console.log(result);
+</script>
+</body>
+</html>
