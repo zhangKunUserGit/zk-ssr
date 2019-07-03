@@ -6,6 +6,7 @@ const serve = require('koa-static');
 const bodyParser = require('koa-bodyparser');
 const session = require('koa-session');
 const cors = require('koa2-cors');
+const handleResponse = require('./middlewares/handle-response');
 const serverRender = require('./util/server-render');
 
 const app = new Koa();
@@ -22,6 +23,7 @@ const config = {
   renew: false
 };
 
+app.use(handleResponse);
 app.use(
   cors({
     credentials: true // request 的 credentials属性表示是否允许其他域发送cookie
@@ -34,9 +36,9 @@ if (process.env.NODE_ENV === 'development') {
   const devStatic = require('./util/dev-static');
   devStatic(app, router);
 } else {
-  const serverEntry = require('../build/server-entry');
-  const template = fs.readFileSync(path.resolve(__dirname, '../build/server.ejs'), 'utf-8');
-  app.use(serve(path.join(__dirname, '../build')));
+  const serverEntry = require('../dist/server-entry');
+  const template = fs.readFileSync(path.resolve(__dirname, '../dist/server.ejs'), 'utf-8');
+  app.use(serve(path.join(__dirname, '../dist')));
 
   router.get('*', async (ctx, next) => {
     // const appString = ReactSSR.renderToString(serverEntry.default);
@@ -48,6 +50,6 @@ if (process.env.NODE_ENV === 'development') {
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen(3333, () => {
-  console.log('server is listening at port 3333');
+app.listen(9000, () => {
+  console.log('server is listening at port 9000');
 });

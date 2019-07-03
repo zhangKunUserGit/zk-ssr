@@ -7,16 +7,20 @@ const serialize = require('serialize-javascript');
 // 获取state
 const getStoreState = stores => {
   // 服务端渲染结束后, 得到数据默认值
-  return {};
+  return Object.keys(stores).reduce((result, storeName) => {
+    result[storeName] = stores[storeName].toJson();
+    return result;
+  }, {});
 };
 
 module.exports = async (ctx, next, bundle, template) => {
   const routerContext = {};
-  const configureStore = bundle.configureStore;
-  const store = configureStore();
-  const createApp = bundle.router;
-  console.log(createApp);
-  const appTemplate = createApp(store, routerContext, ctx.url);
+  const createStoreMap = bundle.createStoreMap;
+  const stores = createStoreMap();
+  // Create a theme instance.
+  const createApp = bundle.default;
+  const appTemplate = createApp(stores, routerContext, ctx.url);
+
   await bootstrapper(appTemplate)
     .then(() => {
       const appString = ReactSSR.renderToString(appTemplate);
@@ -30,16 +34,13 @@ module.exports = async (ctx, next, bundle, template) => {
         return;
       }
 
-      const state = getStoreState(store);
-      console.log('state', state);
-
+      const state = getStoreState(stores);
       // 将数据插入到html中，完成client端数据的同步
       /**
        * 使用<%%-  %>语法
        * webpack中的html-webpack-plugin插件编译ejs模板时，也是可以识别ejs语法的，所以在webpack编译时就将相应变量插入进去了
        * 可以使用ejs的一个loader来处理<%%-  %>，将编译出来的结果变为<%-  %>，这样就仍为正确的ejs模板语法
        */
-
       const html = ejs.render(template, {
         initialState: serialize(state),
         appString,

@@ -1,5 +1,5 @@
 module.exports = {
-  async checkNeedToken (ctx, next) {
+  async checkNeedToken(ctx, next) {
     const { needAccessToken } = ctx.query;
     const user = ctx.session.user || {};
 

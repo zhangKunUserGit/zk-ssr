@@ -4,33 +4,17 @@ const MemoryFs = require('memory-fs');
 const path = require('path');
 const proxy = require('koa-proxies');
 // const bootstrapper = require('react-async-bootstrapper');
-const serverConfig = require('../../config/webpack.server.conf');
+const serverConfig = require('../../build/webpack.server.conf');
 const serverRender = require('./server-render');
 
 // 获取模板文件
 const getTemplate = () => {
-  return (
-    '<!DOCTYPE html>\n' +
-    '<html lang="en">\n' +
-    '  <head>\n' +
-    '    <meta charset="UTF-8">\n' +
-    '    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-    '    <meta http-equiv="X-UA-Compatible" content="ie=edge">\n' +
-    '    <%- meta %>\n' +
-    '    <%- title %>\n' +
-    '    <%- link %>\n' +
-    '    <%- style %>\n' +
-    '  </head>\n' +
-    '  <body>\n' +
-    '    <script>\n' +
-    '      window.__INITIAL_STATE__ = <%- initialState %>\n' +
-    '    </script>\n' +
-    '    <div id="root">\n' +
-    '      <%- appString %>\n' +
-    '    </div>\n' +
-    ' </body>\n' +
-    '</html> '
-  );
+  return axios
+    .get('http://0.0.0.0:8080/public/server.ejs')
+    .then(res => res.data)
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 const NativeModule = require('module');
@@ -110,16 +94,19 @@ module.exports = (app, router) => {
   // 代理转发
   app.use(
     proxy('/public', {
-      target: 'http://0.0.0.0:8080'
+      target: 'http://0.0.0.0:8080',
+      ws: false
     })
   );
 
   const template = getTemplate();
-  router.get('*', async (ctx, next) => {
-    if (!serverBundle) {
-      ctx.body = 'waiting for compile';
-      return;
-    }
-    await serverRender(ctx, next, serverBundle, template);
+  template.then(res => {
+    router.get('*', async (ctx, next) => {
+      if (!serverBundle) {
+        ctx.body = 'waiting for compile';
+        return;
+      }
+      await serverRender(ctx, next, serverBundle, res);
+    });
   });
 };
