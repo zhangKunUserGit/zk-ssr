@@ -1,5 +1,3 @@
-'use strict'
-
 const path = require('path');
 
 module.exports = {
@@ -7,9 +5,7 @@ module.exports = {
     // Paths
     assetsPublicPath: '/public/',
     assetsSubDirectory: 'static',
-    proxyTable: {
-
-    },
+    proxyTable: {},
     // Use Eslint Loader?
     // If true, your code will be linted during bundling and
     // linting errors and warnings will be shown in the console.
@@ -27,7 +23,7 @@ module.exports = {
 
     /**
      * Source Maps
-    */
+     */
 
     devtool: 'cheap-module-eval-source-map',
 
@@ -51,6 +47,5 @@ module.exports = {
     productionGzipExtensions: ['js', 'css'],
 
     bundleAnalyzerReport: process.env.npm_config_report
-
   }
 };

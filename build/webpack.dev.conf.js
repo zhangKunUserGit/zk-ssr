@@ -1,5 +1,3 @@
-'use strict'
-
 const portfinder = require('portfinder');
 const merge = require('webpack-merge');
 const path = require('path');
@@ -19,18 +17,19 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     path: config.build.assetsRoot,
     filename: utils.assetsPath('js/[name].[hash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
-    publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
+    publicPath:
+      process.env.NODE_ENV === 'production'
+        ? config.build.assetsPublicPath
+        : config.dev.assetsPublicPath
   },
   module: {
-    rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true }),
+    rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
   },
   devtool: config.dev.devtool,
   devServer: {
     clientLogLevel: 'warning',
     historyApiFallback: {
-      rewrites: [
-        { from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, 'app.html') },
-      ],
+      rewrites: [{ from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, 'app.html') }]
     },
     hot: true,
     contentBase: false,
@@ -38,9 +37,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     host: HOST || config.dev.host,
     port: PORT || config.dev.port,
     open: config.dev.autoOpenBrowser,
-    overlay: config.dev.errorOverlay
-      ? { warnings: false, errors: true }
-      : false,
+    overlay: config.dev.errorOverlay ? { warnings: false, errors: true } : false,
     publicPath: config.dev.assetsPublicPath,
     proxy: config.dev.proxyTable,
     quiet: true, // necessary for FriendlyErrorsPlugin
@@ -55,7 +52,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'app.html', // 改名是为了koa中间件服务
       templateParameters: {
-        production: false,
+        production: false
       },
       template: path.join(__dirname, '../client/index.html'),
       inject: true
@@ -63,8 +60,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'server.ejs',
       // template: '!!ejs-compiled-loader!' + path.join(__dirname, '../client/server.template.ejs'),
-      template: path.join(__dirname, '../client/server.template.ejs'),
-    }),
+      template: path.join(__dirname, '../client/server.template.ejs')
+    })
   ]
 });
 
@@ -80,14 +77,16 @@ module.exports = new Promise((resolve, reject) => {
       devWebpackConfig.devServer.port = port;
 
       // Add FriendlyErrorsPlugin
-      devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
-        compilationSuccessInfo: {
-          messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
-        },
-        onErrors: config.dev.notifyOnErrors
-          ? utils.createNotifierCallback()
-          : undefined
-      }));
+      devWebpackConfig.plugins.push(
+        new FriendlyErrorsPlugin({
+          compilationSuccessInfo: {
+            messages: [
+              `Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`
+            ]
+          },
+          onErrors: config.dev.notifyOnErrors ? utils.createNotifierCallback() : undefined
+        })
+      );
 
       resolve(devWebpackConfig);
     }

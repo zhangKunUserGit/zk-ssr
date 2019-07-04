@@ -77,12 +77,8 @@ serverCompiler.watch({}, (err, stats) => {
   // 读出的bundle是为string类型，并不是js中可以使用的模块
   const bundle = mfs.readFileSync(bundlePath, 'utf-8');
   // 使用这种方式打包的模块无法使用require模式
-  // const m = new Module();
-  // m._compile(bundle, 'server-entry.js');
   const m = getModuleFromString(bundle, 'server-entry.js');
-  // serverBundle = m.exports.default;
   serverBundle = m.exports;
-  // createStoreMap = m.exports.createStoreMap;
 });
 
 module.exports = (app, router) => {
