@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import Routes from '../router';
-import TopBar from './top-bar';
+import Routes from './router';
 
 class App extends Component {
   constructor(props) {
@@ -11,7 +10,6 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <TopBar />
         <Routes />
       </React.Fragment>
     );

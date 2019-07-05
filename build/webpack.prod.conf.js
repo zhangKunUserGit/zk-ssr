@@ -1,4 +1,3 @@
-'use strict'
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
@@ -23,6 +22,11 @@ const webpackConfig = merge(baseWebpackConfig, {
     })
   },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
+  entry: {
+    app: path.join(__dirname, '../client/main.js'),
+    login: path.join(__dirname, '../client/Login.js'),
+    home: path.join(__dirname, '../client/Home.js')
+  },
   output: {
     path: config.build.assetsRoot,
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
@@ -58,7 +62,7 @@ const webpackConfig = merge(baseWebpackConfig, {
           enforce: true
         }
       }
-    },
+    }
     // splitChunks: {
     //   cacheGroups: {
     //     vendor: {
@@ -88,7 +92,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     // }),
     new MiniCssExtractPlugin({
       filename: utils.assetsPath('css/[name].[contenthash:12].css'),
-      allChunks: true,
+      allChunks: true
     }),
     new OptimizeCSSPlugin({
       cssProcessorOptions: config.build.productionSourceMap
@@ -98,7 +102,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: config.build.index,
       templateParameters: {
-        production: true,
+        production: true
       },
       template: path.join(__dirname, '../client/index.html'),
       inject: 'body',
@@ -109,12 +113,30 @@ const webpackConfig = merge(baseWebpackConfig, {
       },
       chunksSortMode: 'dependency'
     }),
+    // new HtmlWebpackPlugin({
+    //   filename: 'server.ejs',
+    //   template: path.join(__dirname, '../client/server.template.ejs')
+    // }),
     new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['app'],
       filename: 'server.ejs',
-      template: path.join(__dirname, '../client/server.template.ejs'),
+      template: path.join(__dirname, '../client/server.template.ejs')
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['home'],
+      filename: 'serverHome.ejs',
+      template: path.join(__dirname, '../client/server.template.ejs')
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['login'],
+      filename: 'serverLogin.ejs',
+      template: path.join(__dirname, '../client/server.template.ejs')
     }),
     new webpack.HashedModuleIdsPlugin(),
-    new webpack.optimize.ModuleConcatenationPlugin
+    new webpack.optimize.ModuleConcatenationPlugin()
   ]
 });
 
@@ -125,11 +147,7 @@ if (config.build.productionGzip) {
     new CompressionWebpackPlugin({
       asset: '[path].gz[query]',
       algorithm: 'gzip',
-      test: new RegExp(
-        '\\.(' +
-        config.build.productionGzipExtensions.join('|') +
-        ')$'
-      ),
+      test: new RegExp('\\.(' + config.build.productionGzipExtensions.join('|') + ')$'),
       threshold: 10240,
       minRatio: 0.8
     })

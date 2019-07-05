@@ -1,4 +1,9 @@
 const Koa = require('koa');
+const bootstrapper = require('react-async-bootstrapper');
+const ReactSSR = require('react-dom/server');
+const Helmet = require('react-helmet').default;
+const ejs = require('ejs');
+const serialize = require('serialize-javascript');
 const path = require('path');
 const fs = require('fs');
 const Router = require('koa-router');
@@ -36,15 +41,37 @@ if (process.env.NODE_ENV === 'development') {
   const devStatic = require('./util/dev-static');
   devStatic(app, router);
 } else {
-  const serverEntry = require('../dist/server-entry');
-  const template = fs.readFileSync(path.resolve(__dirname, '../dist/server.ejs'), 'utf-8');
+  const serverEntry = require('../dist/server-home');
+  const template = fs.readFileSync(path.resolve(__dirname, '../dist/serverHome.ejs'), 'utf-8');
   app.use(serve(path.join(__dirname, '../dist')));
-
-  router.get('*', async (ctx, next) => {
-    // const appString = ReactSSR.renderToString(serverEntry.default);
-    // ctx.body = template.replace('<!-- app -->', appString);
-    await serverRender(ctx, next, serverEntry, template);
+  router.get('/home', async (ctx, next) => {
+    const createApp = serverEntry.default;
+    const appTemplate = createApp({ name: 'aaa' });
+    await bootstrapper(appTemplate)
+      .then(() => {
+        const appString = ReactSSR.renderToString(appTemplate);
+        console.log(appString, 'appString');
+        const helmet = Helmet.renderStatic();
+        const html = ejs.render(template, {
+          initialState: serialize({ age: '20' }),
+          appString,
+          title: helmet.title.toString(),
+          meta: helmet.meta.toString(),
+          link: helmet.link.toString(),
+          style: helmet.style.toString()
+        });
+        ctx.body = html;
+      })
+      .catch(err => {
+        console.log(err);
+        next(err);
+      });
   });
+  // router.get('*', async (ctx, next) => {
+  //   // const appString = ReactSSR.renderToString(serverEntry.default);
+  //   // ctx.body = template.replace('<!-- app -->', appString);
+  //   await serverRender(ctx, next, serverEntry, template);
+  // });
 }
 
 app.use(router.routes());

@@ -1,4 +1,9 @@
 const axios = require('axios');
+const bootstrapper = require('react-async-bootstrapper');
+const ReactSSR = require('react-dom/server');
+const Helmet = require('react-helmet').default;
+const ejs = require('ejs');
+const serialize = require('serialize-javascript');
 const webpack = require('webpack');
 const MemoryFs = require('memory-fs');
 const path = require('path');
@@ -8,9 +13,9 @@ const serverConfig = require('../../build/webpack.server.conf');
 const serverRender = require('./server-render');
 
 // 获取模板文件
-const getTemplate = () => {
+const getTemplate = file => {
   return axios
-    .get('http://0.0.0.0:8080/public/server.ejs')
+    .get('http://0.0.0.0:8080/public/' + file + '.ejs')
     .then(res => res.data)
     .catch(err => {
       console.log(err);
@@ -37,6 +42,7 @@ const getModuleFromString = (bundle, filename) => {
   });
   const result = script.runInThisContext();
   result.call(m.exports, m.exports, require, m);
+  console.log(m.exports);
   return m;
 };
 
@@ -54,7 +60,9 @@ serverCompiler.outputFileSystem = mfs;
 
 // 调用 watch 方法会触发 webpack 执行器，但之后会监听变更（很像 CLI 命令: webpack--watch）
 // 一旦 webpack 检测到文件变更，就会重新执行编译。该方法返回一个 Watching 实例。
-let serverBundle;
+// let serverBundleApp;
+// let serverBundleLogin;
+let serverBundleHome;
 // let createStoreMap;
 serverCompiler.watch({}, (err, stats) => {
   // 可以通过stats获取到代码编译过程中的有用信息，包括：
@@ -72,13 +80,20 @@ serverCompiler.watch({}, (err, stats) => {
     console.warn(info.warnings);
   }
 
-  const bundlePath = path.join(serverConfig.output.path, serverConfig.output.filename);
+  const bundlePath = path.join(serverConfig.output.path, 'server-home.js');
+  console.log(bundlePath);
   // 从内存中读取server bundle
   // 读出的bundle是为string类型，并不是js中可以使用的模块
   const bundle = mfs.readFileSync(bundlePath, 'utf-8');
+  // console.log(JSON.stringify(bundle), 'bundle');
   // 使用这种方式打包的模块无法使用require模式
-  const m = getModuleFromString(bundle, 'server-entry.js');
-  serverBundle = m.exports;
+  // const mApp = getModuleFromString(bundle, 'app.js');
+  // serverBundleApp = mApp.exports;
+  const mHome = getModuleFromString(bundle, 'server-home.js');
+  console.log(mHome);
+  serverBundleHome = mHome.exports;
+  console.log(serverBundleHome);
+  // console.log(JSON.stringify(serverBundleHome), 'aaa');
 });
 
 module.exports = (app, router) => {
@@ -94,15 +109,44 @@ module.exports = (app, router) => {
       ws: false
     })
   );
-
-  const template = getTemplate();
-  template.then(res => {
-    router.get('*', async (ctx, next) => {
-      if (!serverBundle) {
-        ctx.body = 'waiting for compile';
-        return;
-      }
-      await serverRender(ctx, next, serverBundle, res);
-    });
+  router.get('/home', async (ctx, next) => {
+    const template = await getTemplate('serverHome');
+    if (!serverBundleHome) {
+      ctx.body = 'waiting for compile';
+      return;
+    }
+    const createApp = serverBundleHome.default;
+    const appTemplate = createApp({ name: 'zhan666g' });
+    await bootstrapper(appTemplate)
+      .then(() => {
+        const appString = ReactSSR.renderToString(appTemplate);
+        console.log(appString, 'appString');
+        const helmet = Helmet.renderStatic();
+        const html = ejs.render(template, {
+          initialState: serialize({ age: '20' }),
+          appString,
+          title: helmet.title.toString(),
+          meta: helmet.meta.toString(),
+          link: helmet.link.toString(),
+          style: helmet.style.toString()
+        });
+        ctx.body = html;
+      })
+      .catch(err => {
+        console.log(err);
+        next(err);
+      });
+    // await serverRender(ctx, next, serverBundleHome, res);
   });
+
+  // const template = getTemplate();
+  // template.then(res => {
+  //   router.get('*', async (ctx, next) => {
+  //     if (!serverBundle) {
+  //       ctx.body = 'waiting for compile';
+  //       return;
+  //     }
+  //     await serverRender(ctx, next, serverBundle, res);
+  //   });
+  // });
 };

@@ -1,24 +1,26 @@
-'use strict'
-
 const merge = require('webpack-merge');
 const path = require('path');
 const config = require('../config');
 const baseWebpackConfig = require('./webpack.base.conf');
 const utils = require('./utils');
 
-
 const serverWebpackConfig = merge(baseWebpackConfig, {
   mode: 'development',
   target: 'node',
   entry: {
-    app: path.join(__dirname, '../client/server-entry.js')
+    app: path.join(__dirname, '../client/server-entry.js'),
+    login: path.join(__dirname, '../client/serverLogin.js'),
+    home: path.join(__dirname, '../client/serverHome.js')
   },
   output: {
     path: config.build.assetsRoot,
     // filename: utils.assetsPath('js/server-entry.js'),
-    filename: 'server-entry.js',
+    filename: 'server-[name].js',
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
-    publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
+    publicPath:
+      process.env.NODE_ENV === 'production'
+        ? config.build.assetsPublicPath
+        : config.dev.assetsPublicPath,
     libraryTarget: 'commonjs2'
   },
   // 去除依赖，不打包到生成的文件中
@@ -27,7 +29,7 @@ const serverWebpackConfig = merge(baseWebpackConfig, {
   // module: {
   //   rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
   // },
-  devtool: config.dev.devtool,
+  devtool: config.dev.devtool
 });
 
 module.exports = serverWebpackConfig;

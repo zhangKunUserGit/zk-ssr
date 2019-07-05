@@ -13,6 +13,11 @@ const PORT = process.env.PORT && Number(process.env.PORT);
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   mode: 'development',
+  entry: {
+    app: path.join(__dirname, '../client/main.js'),
+    login: path.join(__dirname, '../client/Login.js'),
+    home: path.join(__dirname, '../client/Home.js')
+  },
   output: {
     path: config.build.assetsRoot,
     filename: utils.assetsPath('js/[name].[hash].js'),
@@ -58,8 +63,21 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       inject: true
     }),
     new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['app'],
       filename: 'server.ejs',
-      // template: '!!ejs-compiled-loader!' + path.join(__dirname, '../client/server.template.ejs'),
+      template: path.join(__dirname, '../client/server.template.ejs')
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['home'],
+      filename: 'serverHome.ejs',
+      template: path.join(__dirname, '../client/server.template.ejs')
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['login'],
+      filename: 'serverLogin.ejs',
       template: path.join(__dirname, '../client/server.template.ejs')
     })
   ]
