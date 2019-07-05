@@ -16,7 +16,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   entry: {
     app: path.join(__dirname, '../client/main.js'),
     login: path.join(__dirname, '../client/Login.js'),
-    home: path.join(__dirname, '../client/Home.js')
+    home: path.join(__dirname, '../client/hydrateHome.js')
   },
   output: {
     path: config.build.assetsRoot,

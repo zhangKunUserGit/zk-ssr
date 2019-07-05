@@ -1,5 +1,5 @@
 const axios = require('axios');
-const bootstrapper = require('react-async-bootstrapper');
+const bootstrapper = require('./asyncBootstrapper');
 const ReactSSR = require('react-dom/server');
 const Helmet = require('react-helmet').default;
 const ejs = require('ejs');
@@ -10,7 +10,6 @@ const path = require('path');
 const proxy = require('koa-proxies');
 // const bootstrapper = require('react-async-bootstrapper');
 const serverConfig = require('../../build/webpack.server.conf');
-const serverRender = require('./server-render');
 
 // 获取模板文件
 const getTemplate = file => {
@@ -42,7 +41,6 @@ const getModuleFromString = (bundle, filename) => {
   });
   const result = script.runInThisContext();
   result.call(m.exports, m.exports, require, m);
-  console.log(m.exports);
   return m;
 };
 
@@ -81,27 +79,14 @@ serverCompiler.watch({}, (err, stats) => {
   }
 
   const bundlePath = path.join(serverConfig.output.path, 'server-home.js');
-  console.log(bundlePath);
   // 从内存中读取server bundle
   // 读出的bundle是为string类型，并不是js中可以使用的模块
   const bundle = mfs.readFileSync(bundlePath, 'utf-8');
-  // console.log(JSON.stringify(bundle), 'bundle');
-  // 使用这种方式打包的模块无法使用require模式
-  // const mApp = getModuleFromString(bundle, 'app.js');
-  // serverBundleApp = mApp.exports;
   const mHome = getModuleFromString(bundle, 'server-home.js');
-  console.log(mHome);
   serverBundleHome = mHome.exports;
-  console.log(serverBundleHome);
-  // console.log(JSON.stringify(serverBundleHome), 'aaa');
 });
 
 module.exports = (app, router) => {
-  // 开发环境
-  // webpack启动时获取template，然后返回给前端
-  // webpack-dev-server 编译的文件存储在内存中
-  // 获取server端的bundle文件，这个文件是由执行webpack.server.conf.js文件获取的，并且开发环境下每次改变文件需要重新编译
-
   // 代理转发
   app.use(
     proxy('/public', {
@@ -115,38 +100,24 @@ module.exports = (app, router) => {
       ctx.body = 'waiting for compile';
       return;
     }
-    const createApp = serverBundleHome.default;
-    const appTemplate = createApp({ name: 'zhan666g' });
-    await bootstrapper(appTemplate)
-      .then(() => {
-        const appString = ReactSSR.renderToString(appTemplate);
-        console.log(appString, 'appString');
-        const helmet = Helmet.renderStatic();
-        const html = ejs.render(template, {
-          initialState: serialize({ age: '20' }),
-          appString,
-          title: helmet.title.toString(),
-          meta: helmet.meta.toString(),
-          link: helmet.link.toString(),
-          style: helmet.style.toString()
-        });
-        ctx.body = html;
-      })
-      .catch(err => {
-        console.log(err);
-        next(err);
+    try {
+      const createApp = serverBundleHome.AppComponent;
+      const setPrevState = serverBundleHome.setPrevState;
+      const info = await setPrevState();
+      const appTemplate = createApp(info);
+      const appString = ReactSSR.renderToString(appTemplate);
+      const helmet = Helmet.renderStatic();
+      ctx.body = ejs.render(template, {
+        initialState: serialize(info),
+        appString,
+        title: helmet.title.toString(),
+        meta: helmet.meta.toString(),
+        link: helmet.link.toString(),
+        style: helmet.style.toString()
       });
-    // await serverRender(ctx, next, serverBundleHome, res);
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
   });
-
-  // const template = getTemplate();
-  // template.then(res => {
-  //   router.get('*', async (ctx, next) => {
-  //     if (!serverBundle) {
-  //       ctx.body = 'waiting for compile';
-  //       return;
-  //     }
-  //     await serverRender(ctx, next, serverBundle, res);
-  //   });
-  // });
 };

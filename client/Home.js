@@ -1,26 +1,39 @@
 import React from 'react';
+import bindMethodsHoc from './highOrderComponents/bindMethodsHoc';
 
-let count = 1;
+// 公共部分，在Node环境中无window document navigator 等对象
+if (typeof window === 'undefined') {
+  global.window = {};
+  global.document = {};
+}
 
+@bindMethodsHoc(() => {
+  return {
+    setPrevState: async self => {
+      const info = await self.getMyName();
+      return info;
+    },
+    getMyName: async () => {
+      const info = await { myName: 'zhangkun' };
+      return info;
+    }
+  };
+})
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      myName: 'zhangkun346'
-    };
+    console.log(props);
+    this.state = {};
   }
   onChangeName() {
-    console.log('aaaa');
-    this.setState({
-      myName: `zhangkun2233434`
-    });
+    // this.setState({
+    //   myName: `zhangkun ${count++}`
+    // });
   }
   render() {
-    console.log(this.props);
     return (
       <div>
-        <button onClick={this.onChangeName.bind(this)}>btnbtn </button>
-        Home page1111 {JSON.stringify(this.props)}789 {this.state.myName}
+        <button onClick={this.onChangeName.bind(this)}>btnbtn</button>1111
       </div>
     );
   }
