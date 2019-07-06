@@ -1,3 +1,4 @@
+require('babel-polyfill');
 const portfinder = require('portfinder');
 const merge = require('webpack-merge');
 const path = require('path');
@@ -16,7 +17,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   entry: {
     app: path.join(__dirname, '../client/main.js'),
     login: path.join(__dirname, '../client/Login.js'),
-    home: path.join(__dirname, '../client/hydrateHome.js')
+    home: ['babel-polyfill', path.join(__dirname, '../client/hydrateHome.js')]
   },
   output: {
     path: config.build.assetsRoot,

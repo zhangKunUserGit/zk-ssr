@@ -13,7 +13,6 @@ const createLintingRule = () => ({
     emitWarning: !config.dev.showEslintErrorsInOverlay
   }
 });
-
 module.exports = {
   // context: path.resolve(__dirname, '../client'),
   entry: {

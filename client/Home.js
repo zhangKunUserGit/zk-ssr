@@ -9,11 +9,11 @@ if (typeof window === 'undefined') {
 
 @bindMethodsHoc(() => {
   return {
-    setPrevState: async self => {
+    async setPrevState(self) {
       const info = await self.getMyName();
       return info;
     },
-    getMyName: async () => {
+    async getMyName() {
       const info = await { myName: 'zhangkun' };
       return info;
     }
