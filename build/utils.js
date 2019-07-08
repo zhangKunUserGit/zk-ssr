@@ -1,19 +1,15 @@
-'use strict'
-
 const path = require('path');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const config = require('../config');
 const packageConfig = require('../package.json');
 
-exports.assetsPath = (_path) => {
-  const assetsSubDirectory = process.env.NODE_ENV === 'production'
-    ? config.build.assetsSubDirectory
-    : config.dev.assetsSubDirectory;
+exports.assetsPath = _path => {
+  const assetsSubDirectory = 'static';
   return path.posix.join(assetsSubDirectory, _path);
 };
 
-exports.cssLoaders = (options) => {
+exports.cssLoaders = options => {
   options = options || {};
 
   const cssLoader = {
@@ -33,7 +29,7 @@ exports.cssLoaders = (options) => {
   const miniCssExtractPlugin = {
     loader: MiniCssExtractPlugin.loader,
     options: {}
-  }
+  };
 
   const generateLoaders = (loader, loaderOptions) => {
     const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader];
@@ -72,7 +68,7 @@ exports.cssLoaders = (options) => {
   };
 };
 
-exports.styleLoaders = (options) => {
+exports.styleLoaders = options => {
   const output = [];
   const loaders = exports.cssLoaders(options);
 
@@ -100,5 +96,5 @@ exports.createNotifierCallback = () => {
       subtitle: filename || '',
       icon: path.join(__dirname, 'logo.png')
     });
-  }
-}
+  };
+};

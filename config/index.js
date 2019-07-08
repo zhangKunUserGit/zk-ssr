@@ -18,7 +18,7 @@ module.exports = {
     port: 8080,
     notifyOnErrors: true,
     autoOpenBrowser: false,
-    errorOverlay: true,
+    errorOverlay: false,
     poll: false,
 
     /**

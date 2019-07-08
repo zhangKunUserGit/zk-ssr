@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import withStyles from 'isomorphic-style-loader/withStyles';
 
 export default function bindMethodsHoc(...params) {
   // 无参数
@@ -6,29 +7,36 @@ export default function bindMethodsHoc(...params) {
     return <div>1111</div>;
   }
   const methods = params[0]();
+  const styleList = params[1];
   const copyMethods = { ...methods };
   delete copyMethods.setPrevState;
   return WrappedComponent => {
-    return {
-      AppComponent: class extends Component {
-        constructor(props) {
-          super(props);
-          if (typeof window.__INITIAL_STATE__ !== 'undefined') {
-            this.state = window.__INITIAL_STATE__;
-            // 清除
-            window.__INITIAL_STATE__ = null;
-            const el = document.getElementById('initialState');
-            if (el && el.remove) {
-              el.remove();
-            }
-          } else {
-            this.state = this.props.prevState || {};
+    class App extends Component {
+      constructor(props) {
+        super(props);
+        if (typeof window.__INITIAL_STATE__ !== 'undefined') {
+          this.state = window.__INITIAL_STATE__;
+          // 清除
+          window.__INITIAL_STATE__ = null;
+          const initialStateEl = document.getElementById('initialState');
+          const initialStyleEl = document.getElementById('initialStyle');
+          if (initialStateEl && initialStateEl.remove) {
+            initialStateEl.remove();
           }
+          if (initialStyleEl && initialStyleEl.remove) {
+            initialStyleEl.remove();
+          }
+        } else {
+          this.state = this.props.prevState || {};
         }
-        render() {
-          return <WrappedComponent {...this.props} prevState={this.state} {...copyMethods} />;
-        }
-      },
+      }
+      render() {
+        console.log(this.props);
+        return <WrappedComponent {...this.props} prevState={this.state} {...copyMethods} />;
+      }
+    }
+    return {
+      AppComponent: styleList ? withStyles(styleList)(App) : App,
       setPrevState: methods.setPrevState.bind(null, copyMethods)
     };
   };

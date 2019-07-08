@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -9,8 +10,9 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const utils = require('./utils');
 const baseWebpackConfig = require('./webpack.base.conf');
 const config = require('../config');
+const appEnv = require('./env');
 
-// const env = require('../config/prod.env');
+const env = appEnv.getClientEnvironment('/');
 
 const webpackConfig = merge(baseWebpackConfig, {
   mode: 'production',
@@ -62,25 +64,13 @@ const webpackConfig = merge(baseWebpackConfig, {
           enforce: true
         }
       }
-    }
-    // splitChunks: {
-    //   cacheGroups: {
-    //     vendor: {
-    //       test: /[\\/]node_modules[\\/]/,
-    //       name: 'vendor',
-    //       chunks: 'all'
-    //     },
-    //     manifest: {
-    //       name: 'manifest',
-    //       minChunks: Infinity
-    //     },
-    //   }
-    // },
+    },
+    // Keep the runtime chunk separated to enable long term caching
+    // https://twitter.com/wSokra/status/969679223278505985
+    runtimeChunk: true
   },
   plugins: [
-    // new webpack.DefinePlugin({
-    //   'process.env': env
-    // }),
+    new webpack.DefinePlugin(env.stringified),
     // new UglifyJsPlugin({
     //   uglifyOptions: {
     //     compress: {
@@ -91,8 +81,17 @@ const webpackConfig = merge(baseWebpackConfig, {
     //   parallel: true
     // }),
     new MiniCssExtractPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash:12].css'),
-      allChunks: true
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: 'static/css/[name].css',
+      chunkFilename: 'static/css/[name].chunk.css'
+    }),
+    // Generate a manifest file which contains a mapping of all asset filenames
+    // to their corresponding output file so that tools can pick it up without
+    // having to parse `index.html`.
+    new ManifestPlugin({
+      fileName: 'asset-manifest.json',
+      publicPath: '/'
     }),
     new OptimizeCSSPlugin({
       cssProcessorOptions: config.build.productionSourceMap

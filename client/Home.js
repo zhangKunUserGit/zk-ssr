@@ -1,5 +1,6 @@
 import React from 'react';
 import bindMethodsHoc from './highOrderComponents/bindMethodsHoc';
+import s from './home.module.scss';
 
 // 公共部分，在Node环境中无window document navigator 等对象
 if (typeof window === 'undefined') {
@@ -18,22 +19,26 @@ if (typeof window === 'undefined') {
       return info;
     }
   };
-})
+}, s)
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
-    this.state = {};
+    this.state = {
+      myName: props.prevState.myName
+    };
   }
   onChangeName() {
-    // this.setState({
-    //   myName: `zhangkun ${count++}`
-    // });
+    this.setState({
+      myName: '111'
+    });
   }
   render() {
     return (
       <div>
-        <button onClick={this.onChangeName.bind(this)}>btnbtn</button>1111
+        <button onClick={this.onChangeName.bind(this)} className={s.btn}>
+          btnbtn {this.state.myName}
+        </button>
+        1111
       </div>
     );
   }

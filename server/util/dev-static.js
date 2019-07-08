@@ -62,28 +62,34 @@ serverCompiler.outputFileSystem = mfs;
 // let serverBundleLogin;
 let serverBundleHome;
 // let createStoreMap;
-serverCompiler.watch({}, (err, stats) => {
+serverCompiler.watch({}, (err, stats, next) => {
   // 可以通过stats获取到代码编译过程中的有用信息，包括：
   // 1. 错误和警告（如果有的话）
   // 2. 计时信息
   // 3. module 和 chunk 信息
   if (err) throw err;
-  const info = stats.toJson();
-  if (stats.hasErrors()) {
-    console.log('错误');
-    console.error(info.errors);
-  }
-  if (stats.hasWarnings()) {
-    console.log('警告');
-    console.warn(info.warnings);
-  }
+  console.log('aaaa');
+  try {
+    const info = stats.toJson();
+    if (stats.hasErrors()) {
+      console.log('错误');
+      console.error(info.errors);
+    }
+    if (stats.hasWarnings()) {
+      console.log('警告');
+      console.warn(info.warnings);
+    }
 
-  const bundlePath = path.join(serverConfig.output.path, 'server-home.js');
-  // 从内存中读取server bundle
-  // 读出的bundle是为string类型，并不是js中可以使用的模块
-  const bundle = mfs.readFileSync(bundlePath, 'utf-8');
-  const mHome = getModuleFromString(bundle, 'server-home.js');
-  serverBundleHome = mHome.exports;
+    const bundlePath = path.join(serverConfig.output.path, 'server-home.js');
+    // 从内存中读取server bundle
+    // 读出的bundle是为string类型，并不是js中可以使用的模块
+    const bundle = mfs.readFileSync(bundlePath, 'utf-8');
+    const mHome = getModuleFromString(bundle, 'server-home.js');
+    serverBundleHome = mHome.exports;
+  } catch (e) {
+    console.log(e);
+    next();
+  }
 });
 
 module.exports = (app, router) => {
@@ -101,19 +107,28 @@ module.exports = (app, router) => {
       return;
     }
     try {
+      const css = new Set();
+
+      // Enables critical path CSS rendering
+      // https://github.com/kriasoft/isomorphic-style-loader
+      const insertCss = (...styles) => {
+        console.log(styles, 'styles');
+        // eslint-disable-next-line no-underscore-dangle
+        styles.forEach(style => css.add(style._getCss()));
+      };
       const createApp = serverBundleHome.AppComponent;
       const setPrevState = serverBundleHome.setPrevState;
       const info = await setPrevState();
-      const appTemplate = createApp(info);
+      const appTemplate = createApp(info, insertCss);
       const appString = ReactSSR.renderToString(appTemplate);
       const helmet = Helmet.renderStatic();
+      console.log([...css].join(''), 'ccc');
       ctx.body = ejs.render(template, {
         initialState: serialize(info),
         appString,
         title: helmet.title.toString(),
         meta: helmet.meta.toString(),
-        link: helmet.link.toString(),
-        style: helmet.style.toString()
+        style: [...css].join('')
       });
     } catch (e) {
       console.log(e);
