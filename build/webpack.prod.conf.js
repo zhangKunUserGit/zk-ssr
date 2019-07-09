@@ -1,5 +1,8 @@
+require('babel-polyfill');
 const path = require('path');
 const webpack = require('webpack');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const safePostCssParser = require('postcss-safe-parser');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -16,23 +19,24 @@ const env = appEnv.getClientEnvironment('/');
 
 const webpackConfig = merge(baseWebpackConfig, {
   mode: 'production',
-  module: {
-    rules: utils.styleLoaders({
-      sourceMap: config.build.productionSourceMap,
-      extract: true,
-      usePostCSS: true
-    })
-  },
+  // module: {
+  //   rules: utils.styleLoaders({
+  //     sourceMap: config.build.productionSourceMap,
+  //     extract: true,
+  //     usePostCSS: true
+  //   })
+  // },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   entry: {
     app: path.join(__dirname, '../client/main.js'),
     login: path.join(__dirname, '../client/Login.js'),
-    home: path.join(__dirname, '../client/Home.js')
+    home: ['babel-polyfill', path.join(__dirname, '../client/hydrateHome.js')]
   },
   output: {
     path: config.build.assetsRoot,
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
+    publicPath: '/'
   },
   optimization: {
     minimize: true,
@@ -46,28 +50,32 @@ const webpackConfig = merge(baseWebpackConfig, {
           mangle: true
         },
         sourceMap: true
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          parser: safePostCssParser,
+          map: {
+            // `inline: false` forces the sourcemap to be output into a
+            // separate file
+            inline: false,
+            // `annotation: true` appends the sourceMappingURL to the end of
+            // the css file, helping the browser find the sourcemap
+            annotation: true
+          }
+        }
       })
     ],
     splitChunks: {
+      chunks: 'all',
+      name: false,
       cacheGroups: {
-        commons: {
-          chunks: 'initial',
-          minChunks: 2,
-          maxInitialRequests: 5, // The default limit is too small to showcase the effect
-          minSize: 0 // This is example is too small to create commons chunks
-        },
         vendor: {
-          test: /node_modules/,
-          chunks: 'initial',
-          name: 'vendor',
-          priority: 10,
-          enforce: true
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor'
         }
       }
-    },
-    // Keep the runtime chunk separated to enable long term caching
-    // https://twitter.com/wSokra/status/969679223278505985
-    runtimeChunk: true
+    }
   },
   plugins: [
     new webpack.DefinePlugin(env.stringified),
@@ -79,6 +87,10 @@ const webpackConfig = merge(baseWebpackConfig, {
     //   },
     //   sourceMap: config.build.productionSourceMap,
     //   parallel: true
+    // }),
+    // new MiniCssExtractPlugin({
+    //   filename: utils.assetsPath('css/[name].[contenthash:12].css'),
+    //   allChunks: true
     // }),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
@@ -98,20 +110,20 @@ const webpackConfig = merge(baseWebpackConfig, {
         ? { safe: true, map: { inline: false } }
         : { safe: true }
     }),
-    new HtmlWebpackPlugin({
-      filename: config.build.index,
-      templateParameters: {
-        production: true
-      },
-      template: path.join(__dirname, '../client/index.html'),
-      inject: 'body',
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: true
-      },
-      chunksSortMode: 'dependency'
-    }),
+    // new HtmlWebpackPlugin({
+    //   filename: config.build.index,
+    //   templateParameters: {
+    //     production: true
+    //   },
+    //   template: path.join(__dirname, '../client/index.html'),
+    //   inject: 'body',
+    //   minify: {
+    //     removeComments: true,
+    //     collapseWhitespace: true,
+    //     removeAttributeQuotes: true
+    //   },
+    //   chunksSortMode: 'dependency'
+    // }),
     // new HtmlWebpackPlugin({
     //   filename: 'server.ejs',
     //   template: path.join(__dirname, '../client/server.template.ejs')
@@ -124,9 +136,21 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['home'],
+      chunks: ['home', 'vendor'],
       filename: 'serverHome.ejs',
-      template: path.join(__dirname, '../client/server.template.ejs')
+      template: path.join(__dirname, '../client/server.template.ejs'),
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true
+      }
     }),
     new HtmlWebpackPlugin({
       inject: true,

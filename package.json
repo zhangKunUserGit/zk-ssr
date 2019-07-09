@@ -2,7 +2,7 @@
   "name": "ssr",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "start": "node scripts/start.js",
     "dev:client": "webpack-dev-server --online --progress --config build/webpack.dev.conf.js",
@@ -15,6 +15,12 @@
     "ssr": "npm run clear && npm run ssr:client && npm run ssr:server",
     "ssr:build": "cross-env NODE_ENV=production node server/server.js"
   },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "engines": {
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
@@ -30,6 +36,7 @@
   },
   "homepage": "https://github.com/Graceji/react-koa-SSR#readme",
   "dependencies": {
+    "autoprefixer": "^9.6.1",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.6",
@@ -66,7 +73,6 @@
     "webpack": "^4.19.0"
   },
   "devDependencies": {
-    "autoprefixer": "^9.6.1",
     "babel-core": "^6.26.3",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^7.1.5",
@@ -111,11 +117,12 @@
     "mini-css-extract-plugin": "^0.4.2",
     "node-notifier": "^5.2.1",
     "nodemon": "^1.19.1",
-    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
     "ora": "^3.0.0",
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-import": "^12.0.0",
     "postcss-loader": "^3.0.0",
+    "postcss-safe-parser": "^4.0.1",
     "postcss-url": "^8.0.0",
     "prettier": "^1.18.2",
     "react-dev-utils": "^9.0.1",

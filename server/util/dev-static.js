@@ -1,5 +1,4 @@
 const axios = require('axios');
-const bootstrapper = require('./asyncBootstrapper');
 const ReactSSR = require('react-dom/server');
 const Helmet = require('react-helmet').default;
 const ejs = require('ejs');
@@ -8,7 +7,6 @@ const webpack = require('webpack');
 const MemoryFs = require('memory-fs');
 const path = require('path');
 const proxy = require('koa-proxies');
-// const bootstrapper = require('react-async-bootstrapper');
 const serverConfig = require('../../build/webpack.server.conf');
 
 // 获取模板文件
@@ -68,7 +66,6 @@ serverCompiler.watch({}, (err, stats, next) => {
   // 2. 计时信息
   // 3. module 和 chunk 信息
   if (err) throw err;
-  console.log('aaaa');
   try {
     const info = stats.toJson();
     if (stats.hasErrors()) {
@@ -100,7 +97,9 @@ module.exports = (app, router) => {
       ws: false
     })
   );
-  router.get('/home', async (ctx, next) => {
+  router.get('/:home/aa.html', async (ctx, next) => {
+    console.log(ctx.params);
+    console.log(ctx.query.name);
     const template = await getTemplate('serverHome');
     if (!serverBundleHome) {
       ctx.body = 'waiting for compile';
@@ -108,12 +107,7 @@ module.exports = (app, router) => {
     }
     try {
       const css = new Set();
-
-      // Enables critical path CSS rendering
-      // https://github.com/kriasoft/isomorphic-style-loader
       const insertCss = (...styles) => {
-        console.log(styles, 'styles');
-        // eslint-disable-next-line no-underscore-dangle
         styles.forEach(style => css.add(style._getCss()));
       };
       const createApp = serverBundleHome.AppComponent;
@@ -122,7 +116,6 @@ module.exports = (app, router) => {
       const appTemplate = createApp(info, insertCss);
       const appString = ReactSSR.renderToString(appTemplate);
       const helmet = Helmet.renderStatic();
-      console.log([...css].join(''), 'ccc');
       ctx.body = ejs.render(template, {
         initialState: serialize(info),
         appString,

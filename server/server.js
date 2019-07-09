@@ -44,34 +44,30 @@ if (process.env.NODE_ENV === 'development') {
   const serverEntry = require('../dist/server-home');
   const template = fs.readFileSync(path.resolve(__dirname, '../dist/serverHome.ejs'), 'utf-8');
   app.use(serve(path.join(__dirname, '../dist')));
-  router.get('/home', async (ctx, next) => {
-    const createApp = serverEntry.default;
-    const appTemplate = createApp({ name: 'aaa' });
-    await bootstrapper(appTemplate)
-      .then(() => {
-        const appString = ReactSSR.renderToString(appTemplate);
-        console.log(appString, 'appString');
-        const helmet = Helmet.renderStatic();
-        const html = ejs.render(template, {
-          initialState: serialize({ age: '20' }),
-          appString,
-          title: helmet.title.toString(),
-          meta: helmet.meta.toString(),
-          link: helmet.link.toString(),
-          style: helmet.style.toString()
-        });
-        ctx.body = html;
-      })
-      .catch(err => {
-        console.log(err);
-        next(err);
+  router.get('/:home/aa.html', async (ctx, next) => {
+    try {
+      const css = new Set();
+      const insertCss = (...styles) => {
+        styles.forEach(style => css.add(style._getCss()));
+      };
+      const createApp = serverEntry.AppComponent;
+      const setPrevState = serverEntry.setPrevState;
+      const info = await setPrevState();
+      const appTemplate = createApp(info, insertCss);
+      const appString = ReactSSR.renderToString(appTemplate);
+      const helmet = Helmet.renderStatic();
+      ctx.body = ejs.render(template, {
+        initialState: serialize(info),
+        appString,
+        title: helmet.title.toString(),
+        meta: helmet.meta.toString(),
+        style: [...css].join('')
       });
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
   });
-  // router.get('*', async (ctx, next) => {
-  //   // const appString = ReactSSR.renderToString(serverEntry.default);
-  //   // ctx.body = template.replace('<!-- app -->', appString);
-  //   await serverRender(ctx, next, serverEntry, template);
-  // });
 }
 
 app.use(router.routes());

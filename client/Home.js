@@ -27,15 +27,16 @@ export default class Home extends React.Component {
       myName: props.prevState.myName
     };
   }
-  onChangeName() {
+  onChangeName = () => {
+    console.log('onChangeName');
     this.setState({
       myName: '111'
     });
-  }
+  };
   render() {
     return (
       <div>
-        <button onClick={this.onChangeName.bind(this)} className={s.btn}>
+        <button onClick={this.onChangeName} className={s.btn}>
           btnbtn {this.state.myName}
         </button>
         1111
