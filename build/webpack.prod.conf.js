@@ -1,5 +1,6 @@
 require('babel-polyfill');
 const path = require('path');
+const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
@@ -16,16 +17,11 @@ const config = require('../config');
 const appEnv = require('./env');
 
 const env = appEnv.getClientEnvironment('/');
+const sassRegex = /\.(scss|sass)$/;
+const sassModuleRegex = /\.module\.(scss|sass)$/;
 
 const webpackConfig = merge(baseWebpackConfig, {
   mode: 'production',
-  // module: {
-  //   rules: utils.styleLoaders({
-  //     sourceMap: config.build.productionSourceMap,
-  //     extract: true,
-  //     usePostCSS: true
-  //   })
-  // },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   entry: {
     app: path.join(__dirname, '../client/main.js'),
@@ -37,6 +33,48 @@ const webpackConfig = merge(baseWebpackConfig, {
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
     publicPath: '/'
+  },
+  module: {
+    // strictExportPresence: true,
+    rules: [
+      {
+        oneOf: [
+          {
+            test: sassRegex,
+            exclude: sassModuleRegex,
+            use: [
+              {
+                loader: MiniCssExtractPlugin.loader
+              },
+              {
+                loader: require.resolve('css-loader')
+              },
+              {
+                loader: require.resolve('postcss-loader'),
+                options: {
+                  ident: 'postcss',
+                  plugins: () => [
+                    require('postcss-flexbugs-fixes'),
+                    autoprefixer({
+                      overrideBrowserslist: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9'],
+                      flexbox: 'no-2009'
+                    })
+                  ],
+                  sourceMap: true
+                }
+              },
+              {
+                loader: require.resolve('sass-loader'),
+                options: {
+                  sourceMap: true
+                }
+              }
+            ],
+            sideEffects: false
+          }
+        ]
+      }
+    ]
   },
   optimization: {
     minimize: true,
@@ -88,16 +126,16 @@ const webpackConfig = merge(baseWebpackConfig, {
     //   sourceMap: config.build.productionSourceMap,
     //   parallel: true
     // }),
-    // new MiniCssExtractPlugin({
-    //   filename: utils.assetsPath('css/[name].[contenthash:12].css'),
-    //   allChunks: true
-    // }),
     new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // both options are optional
-      filename: 'static/css/[name].css',
-      chunkFilename: 'static/css/[name].chunk.css'
+      filename: utils.assetsPath('css/[name].[contenthash:12].css'),
+      allChunks: true
     }),
+    // new MiniCssExtractPlugin({
+    //   // Options similar to the same options in webpackOptions.output
+    //   // both options are optional
+    //   filename: 'static/css/[name].css',
+    //   chunkFilename: 'static/css/[name].chunk.css'
+    // }),
     // Generate a manifest file which contains a mapping of all asset filenames
     // to their corresponding output file so that tools can pick it up without
     // having to parse `index.html`.

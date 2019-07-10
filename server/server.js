@@ -61,6 +61,7 @@ if (process.env.NODE_ENV === 'development') {
         appString,
         title: helmet.title.toString(),
         meta: helmet.meta.toString(),
+        link: helmet.link.toString(),
         style: [...css].join('')
       });
     } catch (e) {

@@ -1,4 +1,5 @@
 const path = require('path');
+const utils = require('./utils');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
@@ -133,18 +134,35 @@ module.exports = {
           {
             test: sassRegex,
             exclude: sassModuleRegex,
-            use: getStyleLoaders(
+            use: [
               {
-                importLoaders: 2,
-                sourceMap: false
+                loader: MiniCssExtractPlugin.loader
               },
-              'sass-loader'
-            ),
-            // Don't consider CSS imports dead code even if the
-            // containing package claims to have no side effects.
-            // Remove this when webpack adds a warning or an error for this.
-            // See https://github.com/webpack/webpack/issues/6571
-            sideEffects: true
+              {
+                loader: require.resolve('css-loader')
+              },
+              {
+                loader: require.resolve('postcss-loader'),
+                options: {
+                  ident: 'postcss',
+                  plugins: () => [
+                    require('postcss-flexbugs-fixes'),
+                    autoprefixer({
+                      overrideBrowserslist: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9'],
+                      flexbox: 'no-2009'
+                    })
+                  ],
+                  sourceMap: true
+                }
+              },
+              {
+                loader: require.resolve('sass-loader'),
+                options: {
+                  sourceMap: true
+                }
+              }
+            ],
+            sideEffects: false
           },
           {
             test: sassModuleRegex,
@@ -173,5 +191,11 @@ module.exports = {
         ]
       }
     ]
-  }
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: utils.assetsPath('css/[name].[contenthash:12].css'),
+      allChunks: true
+    })
+  ]
 };

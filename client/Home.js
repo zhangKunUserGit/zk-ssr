@@ -1,6 +1,8 @@
 import React from 'react';
 import bindMethodsHoc from './highOrderComponents/bindMethodsHoc';
+import './base.scss';
 import s from './home.module.scss';
+import { Helmet } from 'react-helmet';
 
 // 公共部分，在Node环境中无window document navigator 等对象
 if (typeof window === 'undefined') {
@@ -36,10 +38,13 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={this.onChangeName} className={s.btn}>
-          btnbtn {this.state.myName}
-        </button>
-        1111
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>My Title</title>
+        </Helmet>
+        <button onClick={this.onChangeName}>btnbtn {this.state.myName}</button>
+        1111 <span className="text">tddfasdfdsest</span>
+        <span className="text-gray">444</span>
       </div>
     );
   }
