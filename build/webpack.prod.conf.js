@@ -1,80 +1,33 @@
 require('babel-polyfill');
 const path = require('path');
-const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // webpack4 升级，用extract-text-webpack-plugin提取文件有问题
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const utils = require('./utils');
 const baseWebpackConfig = require('./webpack.base.conf');
-const config = require('../config');
 const appEnv = require('./env');
 
+process.env.NODE_ENV = 'production';
+
 const env = appEnv.getClientEnvironment('/');
-const sassRegex = /\.(scss|sass)$/;
-const sassModuleRegex = /\.module\.(scss|sass)$/;
+console.log(env);
 
 const webpackConfig = merge(baseWebpackConfig, {
   mode: 'production',
-  devtool: config.build.productionSourceMap ? config.build.devtool : false,
+  devtool: '#source-map',
   entry: {
-    app: path.join(__dirname, '../client/main.js'),
-    login: path.join(__dirname, '../client/Login.js'),
     home: ['babel-polyfill', path.join(__dirname, '../client/hydrateHome.js')]
   },
   output: {
-    path: config.build.assetsRoot,
+    path: path.resolve(__dirname, '../dist'),
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
     publicPath: '/'
-  },
-  module: {
-    // strictExportPresence: true,
-    rules: [
-      {
-        oneOf: [
-          {
-            test: sassRegex,
-            exclude: sassModuleRegex,
-            use: [
-              {
-                loader: MiniCssExtractPlugin.loader
-              },
-              {
-                loader: require.resolve('css-loader')
-              },
-              {
-                loader: require.resolve('postcss-loader'),
-                options: {
-                  ident: 'postcss',
-                  plugins: () => [
-                    require('postcss-flexbugs-fixes'),
-                    autoprefixer({
-                      overrideBrowserslist: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9'],
-                      flexbox: 'no-2009'
-                    })
-                  ],
-                  sourceMap: true
-                }
-              },
-              {
-                loader: require.resolve('sass-loader'),
-                options: {
-                  sourceMap: true
-                }
-              }
-            ],
-            sideEffects: false
-          }
-        ]
-      }
-    ]
   },
   optimization: {
     minimize: true,
@@ -93,11 +46,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         cssProcessorOptions: {
           parser: safePostCssParser,
           map: {
-            // `inline: false` forces the sourcemap to be output into a
-            // separate file
             inline: false,
-            // `annotation: true` appends the sourceMappingURL to the end of
-            // the css file, helping the browser find the sourcemap
             annotation: true
           }
         }
@@ -117,60 +66,12 @@ const webpackConfig = merge(baseWebpackConfig, {
   },
   plugins: [
     new webpack.DefinePlugin(env.stringified),
-    // new UglifyJsPlugin({
-    //   uglifyOptions: {
-    //     compress: {
-    //       warnings: false
-    //     }
-    //   },
-    //   sourceMap: config.build.productionSourceMap,
-    //   parallel: true
-    // }),
-    new MiniCssExtractPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash:12].css'),
-      allChunks: true
-    }),
-    // new MiniCssExtractPlugin({
-    //   // Options similar to the same options in webpackOptions.output
-    //   // both options are optional
-    //   filename: 'static/css/[name].css',
-    //   chunkFilename: 'static/css/[name].chunk.css'
-    // }),
-    // Generate a manifest file which contains a mapping of all asset filenames
-    // to their corresponding output file so that tools can pick it up without
-    // having to parse `index.html`.
     new ManifestPlugin({
       fileName: 'asset-manifest.json',
       publicPath: '/'
     }),
     new OptimizeCSSPlugin({
-      cssProcessorOptions: config.build.productionSourceMap
-        ? { safe: true, map: { inline: false } }
-        : { safe: true }
-    }),
-    // new HtmlWebpackPlugin({
-    //   filename: config.build.index,
-    //   templateParameters: {
-    //     production: true
-    //   },
-    //   template: path.join(__dirname, '../client/index.html'),
-    //   inject: 'body',
-    //   minify: {
-    //     removeComments: true,
-    //     collapseWhitespace: true,
-    //     removeAttributeQuotes: true
-    //   },
-    //   chunksSortMode: 'dependency'
-    // }),
-    // new HtmlWebpackPlugin({
-    //   filename: 'server.ejs',
-    //   template: path.join(__dirname, '../client/server.template.ejs')
-    // }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['app'],
-      filename: 'server.ejs',
-      template: path.join(__dirname, '../client/server.template.ejs')
+      cssProcessorOptions: { safe: true, map: { inline: false } }
     }),
     new HtmlWebpackPlugin({
       inject: true,
@@ -190,34 +91,10 @@ const webpackConfig = merge(baseWebpackConfig, {
         minifyURLs: true
       }
     }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['login'],
-      filename: 'serverLogin.ejs',
-      template: path.join(__dirname, '../client/server.template.ejs')
-    }),
     new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin()
-  ]
+  ],
+  performance: false
 });
-
-if (config.build.productionGzip) {
-  const CompressionWebpackPlugin = require('compression-webpack-plugin');
-
-  webpackConfig.plugins.push(
-    new CompressionWebpackPlugin({
-      asset: '[path].gz[query]',
-      algorithm: 'gzip',
-      test: new RegExp('\\.(' + config.build.productionGzipExtensions.join('|') + ')$'),
-      threshold: 10240,
-      minRatio: 0.8
-    })
-  );
-}
-
-if (config.build.bundleAnalyzerReport) {
-  const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-  webpackConfig.plugins.push(new BundleAnalyzerPlugin());
-}
 
 module.exports = webpackConfig;

@@ -5,84 +5,52 @@ const path = require('path');
 const webpack = require('webpack');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const config = require('../config');
 const baseWebpackConfig = require('./webpack.base.conf');
 const utils = require('./utils');
-
-const HOST = process.env.HOST;
-const PORT = process.env.PORT && Number(process.env.PORT);
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   mode: 'development',
   entry: {
-    app: path.join(__dirname, '../client/main.js'),
-    login: path.join(__dirname, '../client/Login.js'),
     home: ['babel-polyfill', path.join(__dirname, '../client/hydrateHome.js')]
   },
   output: {
-    path: config.build.assetsRoot,
+    path: path.resolve(__dirname, '../dist'),
     filename: utils.assetsPath('js/[name].[hash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
-    publicPath:
-      process.env.NODE_ENV === 'production'
-        ? config.build.assetsPublicPath
-        : config.dev.assetsPublicPath
+    publicPath: '/public/'
   },
   devtool: 'cheap-module-eval-source-map',
   devServer: {
     clientLogLevel: 'warning',
-    historyApiFallback: {
-      rewrites: [{ from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, 'app.html') }]
-    },
     hot: true,
     contentBase: false,
     compress: true,
-    host: HOST || config.dev.host,
-    port: PORT || config.dev.port,
-    open: config.dev.autoOpenBrowser,
+    host: '0.0.0.0',
+    port: 8080,
+    open: false,
     overlay: false,
-    publicPath: config.dev.assetsPublicPath,
-    proxy: config.dev.proxyTable,
-    quiet: true, // necessary for FriendlyErrorsPlugin
+    publicPath: '/public/',
+    proxy: {},
+    quiet: true,
     watchOptions: {
-      poll: config.dev.poll
+      poll: false
     }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
+    new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new HtmlWebpackPlugin({
-      filename: 'app.html', // 改名是为了koa中间件服务
-      templateParameters: {
-        production: false
-      },
-      template: path.join(__dirname, '../client/index.html'),
-      inject: true
-    }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['app'],
-      filename: 'server.ejs',
-      template: path.join(__dirname, '../client/server.template.ejs')
-    }),
     new HtmlWebpackPlugin({
       inject: true,
       chunks: ['home'],
       filename: 'serverHome.ejs',
-      template: path.join(__dirname, '../client/server.template.ejs')
-    }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['login'],
-      filename: 'serverLogin.ejs',
       template: path.join(__dirname, '../client/server.template.ejs')
     })
   ]
 });
 
 module.exports = new Promise((resolve, reject) => {
-  portfinder.basePort = process.env.PORT || config.dev.port;
+  portfinder.basePort = 8080;
   portfinder.getPort((err, port) => {
     if (err) {
       reject(err);
@@ -100,7 +68,7 @@ module.exports = new Promise((resolve, reject) => {
               `Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`
             ]
           },
-          onErrors: config.dev.notifyOnErrors ? utils.createNotifierCallback() : undefined
+          onErrors: utils.createNotifierCallback()
         })
       );
 
