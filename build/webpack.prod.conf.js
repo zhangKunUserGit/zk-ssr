@@ -11,11 +11,8 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const utils = require('./utils');
 const baseWebpackConfig = require('./webpack.base.conf');
 const appEnv = require('./env');
-
 process.env.NODE_ENV = 'production';
-
 const env = appEnv.getClientEnvironment('/');
-console.log(env);
 
 const webpackConfig = merge(baseWebpackConfig, {
   mode: 'production',

@@ -1,11 +1,13 @@
-'use strict'
 const chalk = require('chalk');
 const semver = require('semver');
 const packageConfig = require('../package.json');
 const shell = require('shelljs');
 
 function exec(cmd) {
-  return require('child_process').execSync(cmd).toString().trim();
+  return require('child_process')
+    .execSync(cmd)
+    .toString()
+    .trim();
 }
 
 const versionRequirements = [
@@ -31,9 +33,12 @@ module.exports = () => {
     const mod = versionRequirements[i];
 
     if (!semver.satisfies(mod.currentVersion, mod.versionRequirement)) {
-      warnings.push(mod.name + ': ' +
-        chalk.red(mod.currentVersion) + ' should be ' +
-        chalk.green(mod.versionRequirement)
+      warnings.push(
+        mod.name +
+          ': ' +
+          chalk.red(mod.currentVersion) +
+          ' should be ' +
+          chalk.green(mod.versionRequirement)
       );
     }
   }
@@ -51,4 +56,4 @@ module.exports = () => {
     console.log();
     process.exit(1);
   }
-}
+};

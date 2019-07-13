@@ -1,7 +1,10 @@
 const merge = require('webpack-merge');
+const webpack = require('webpack');
 const path = require('path');
 const baseWebpackConfig = require('./webpack.base.conf');
 const utils = require('./utils');
+const appEnv = require('./env');
+const env = appEnv.getClientEnvironment('/');
 
 const serverWebpackConfig = merge(baseWebpackConfig, {
   mode: 'development',
@@ -16,6 +19,7 @@ const serverWebpackConfig = merge(baseWebpackConfig, {
     publicPath: '/public/',
     libraryTarget: 'commonjs2'
   },
+  plugins: [new webpack.DefinePlugin(env.stringified)],
   // 去除依赖，不打包到生成的文件中
   // 打包出来的代码是运行在node环境中的，这些类库是可以通过require()方式调用的
   externals: Object.keys(require('../package.json').dependencies),

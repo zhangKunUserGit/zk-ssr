@@ -12,7 +12,6 @@ const bodyParser = require('koa-bodyparser');
 const session = require('koa-session');
 const cors = require('koa2-cors');
 const handleResponse = require('./middlewares/handle-response');
-const serverRender = require('./util/server-render');
 
 const app = new Koa();
 app.keys = ['koa ssr demo'];
@@ -65,7 +64,7 @@ if (process.env.NODE_ENV === 'development') {
         style: [...css].join('')
       });
     } catch (e) {
-      console.log(e);
+      console.log('xxx');
       next(e);
     }
   });
@@ -74,6 +73,6 @@ if (process.env.NODE_ENV === 'development') {
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen(9000, () => {
+app.listen(9001, () => {
   console.log('server is listening at port 9000');
 });

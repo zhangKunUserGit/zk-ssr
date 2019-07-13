@@ -40,13 +40,15 @@ export default class Home extends React.Component {
       <div>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>My Title</title>
+          <title>My Tit111le</title>
         </Helmet>
         <button onClick={this.onChangeName} className={s.btn}>
           btnbtn {this.state.myName}
+          {process.env.ApiServiceUrl}
+          {process.env.CURRENT_SITE}
         </button>
-        1111 <span className="text">tddfasdfdsest</span>
-        <span className="text-gray">444</span>
+        1111 <span className="text">33e</span>
+        <span className="text-gray">6666</span>
       </div>
     );
   }
