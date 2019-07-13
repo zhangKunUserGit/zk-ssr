@@ -64,7 +64,7 @@ if (process.env.NODE_ENV === 'development') {
         style: [...css].join('')
       });
     } catch (e) {
-      console.log('xxx');
+      console.log(e);
       next(e);
     }
   });

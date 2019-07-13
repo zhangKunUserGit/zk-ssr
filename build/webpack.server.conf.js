@@ -6,6 +6,11 @@ const utils = require('./utils');
 const appEnv = require('./env');
 const env = appEnv.getClientEnvironment('/');
 
+const cssRegex = /\.css$/;
+const cssModuleRegex = /\.module\.css$/;
+const sassRegex = /\.(scss|sass)$/;
+const sassModuleRegex = /\.module\.(scss|sass)$/;
+
 const serverWebpackConfig = merge(baseWebpackConfig, {
   mode: 'development',
   target: 'node',
@@ -18,6 +23,34 @@ const serverWebpackConfig = merge(baseWebpackConfig, {
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
     publicPath: '/public/',
     libraryTarget: 'commonjs2'
+  },
+  module: {
+    rules: [
+      {
+        oneOf: [
+          {
+            test: cssRegex,
+            exclude: cssModuleRegex,
+            use: [
+              {
+                loader: require.resolve('ignore-loader')
+              }
+            ],
+            sideEffects: false
+          },
+          {
+            test: sassRegex,
+            exclude: sassModuleRegex,
+            use: [
+              {
+                loader: require.resolve('ignore-loader')
+              }
+            ],
+            sideEffects: false
+          }
+        ]
+      }
+    ]
   },
   plugins: [new webpack.DefinePlugin(env.stringified)],
   // 去除依赖，不打包到生成的文件中

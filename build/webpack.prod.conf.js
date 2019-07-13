@@ -13,6 +13,47 @@ const baseWebpackConfig = require('./webpack.base.conf');
 const appEnv = require('./env');
 process.env.NODE_ENV = 'production';
 const env = appEnv.getClientEnvironment('/');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const autoprefixer = require('autoprefixer');
+const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
+
+const cssRegex = /\.css$/;
+const cssModuleRegex = /\.module\.css$/;
+const sassRegex = /\.(scss|sass)$/;
+const sassModuleRegex = /\.module\.(scss|sass)$/;
+
+const getStyleLoaders = (cssOptions, preProcessor) => {
+  const loaders = [
+    require.resolve('isomorphic-style-loader'),
+    {
+      loader: require.resolve('css-loader'),
+      options: cssOptions
+    },
+    {
+      loader: require.resolve('postcss-loader'),
+      options: {
+        ident: 'postcss',
+        plugins: () => [
+          require('postcss-flexbugs-fixes'),
+          autoprefixer({
+            overrideBrowserslist: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9'],
+            flexbox: 'no-2009'
+          })
+        ],
+        sourceMap: true
+      }
+    }
+  ].filter(Boolean);
+  if (preProcessor) {
+    loaders.push({
+      loader: require.resolve(preProcessor),
+      options: {
+        sourceMap: true
+      }
+    });
+  }
+  return loaders;
+};
 
 const webpackConfig = merge(baseWebpackConfig, {
   mode: 'production',
@@ -25,6 +66,65 @@ const webpackConfig = merge(baseWebpackConfig, {
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
     publicPath: '/'
+  },
+  module: {
+    rules: [
+      {
+        oneOf: [
+          {
+            test: cssRegex,
+            exclude: cssModuleRegex,
+            use: getStyleLoaders({
+              importLoaders: 1,
+              sourceMap: false
+            }),
+            sideEffects: false
+          },
+          {
+            test: cssModuleRegex,
+            use: getStyleLoaders({
+              importLoaders: 1,
+              sourceMap: false,
+              modules: true,
+              getLocalIdent: getCSSModuleLocalIdent
+            })
+          },
+          {
+            test: sassRegex,
+            exclude: sassModuleRegex,
+            use: [
+              {
+                loader: MiniCssExtractPlugin.loader
+              },
+              {
+                loader: require.resolve('css-loader')
+              },
+              {
+                loader: require.resolve('postcss-loader'),
+                options: {
+                  ident: 'postcss',
+                  plugins: () => [
+                    require('postcss-flexbugs-fixes'),
+                    autoprefixer({
+                      overrideBrowserslist: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9'],
+                      flexbox: 'no-2009'
+                    })
+                  ],
+                  sourceMap: true
+                }
+              },
+              {
+                loader: require.resolve('sass-loader'),
+                options: {
+                  sourceMap: true
+                }
+              }
+            ],
+            sideEffects: false
+          }
+        ]
+      }
+    ]
   },
   optimization: {
     minimize: true,
@@ -69,6 +169,10 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
     new OptimizeCSSPlugin({
       cssProcessorOptions: { safe: true, map: { inline: false } }
+    }),
+    new MiniCssExtractPlugin({
+      filename: utils.assetsPath('css/[name].[contenthash:12].css'),
+      allChunks: true
     }),
     new HtmlWebpackPlugin({
       inject: true,
