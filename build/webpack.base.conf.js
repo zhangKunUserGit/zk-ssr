@@ -1,5 +1,6 @@
 const autoprefixer = require('autoprefixer');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
+const HappyPack = require('happypack');
 const paths = require('./paths');
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
@@ -77,7 +78,7 @@ module.exports = {
           {
             test: /\.(js|mjs|jsx)$/,
             include: [paths.web, paths.server],
-            loader: require.resolve('babel-loader')
+            use: ['happypack/loader?id=babel']
           },
           {
             test: sassModuleRegex,
@@ -102,5 +103,11 @@ module.exports = {
         ]
       }
     ]
-  }
+  },
+  plugins: [
+    new HappyPack({
+      id: 'babel',
+      loaders: ['babel-loader']
+    })
+  ]
 };
