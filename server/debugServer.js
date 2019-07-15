@@ -8,7 +8,6 @@ const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const session = require('koa-session');
 const cors = require('koa2-cors');
-const handleResponse = require('./middlewares/handle-response');
 const axios = require('axios');
 const webpack = require('webpack');
 const MemoryFs = require('memory-fs');
@@ -30,7 +29,6 @@ const config = {
   renew: false
 };
 
-app.use(handleResponse);
 app.use(
   cors({
     credentials: true // request 的 credentials属性表示是否允许其他域发送cookie

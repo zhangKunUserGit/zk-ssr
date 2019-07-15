@@ -4,6 +4,7 @@ const defaultContext = {
   reactAsyncBootstrapperRunning: true
 };
 
+// TODO:: 这个暂时不使用
 /**
  * 在react中使用bootstrap函数，
  * 在服务端运行时，先执行bootstrap并把执行后的值返回

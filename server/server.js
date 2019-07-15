@@ -10,7 +10,6 @@ const serve = require('koa-static');
 const bodyParser = require('koa-bodyparser');
 const session = require('koa-session');
 const cors = require('koa2-cors');
-const handleResponse = require('./middlewares/handle-response');
 const serverRoutes = require('./routes/index');
 
 const app = new Koa();
@@ -27,7 +26,6 @@ const config = {
   renew: false
 };
 
-app.use(handleResponse);
 app.use(
   cors({
     credentials: true
@@ -76,5 +74,5 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 app.listen(9001, () => {
-  console.log('server is listening at port 9000');
+  console.log('server is listening at port 9001');
 });
