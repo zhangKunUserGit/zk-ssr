@@ -42,7 +42,7 @@ export default class Home extends React.Component {
           {process.env.CURRENT_SITE}
         </button>
         1111 <span className="text">33e</span>
-        <span className="text-gray">6666</span>
+        <span className="text-gray">777888</span>
       </div>
     );
   }

@@ -11,6 +11,7 @@ const bodyParser = require('koa-bodyparser');
 const session = require('koa-session');
 const cors = require('koa2-cors');
 const handleResponse = require('./middlewares/handle-response');
+const serverRoutes = require('./routes/index');
 
 const app = new Koa();
 app.keys = ['koa ssr demo'];
@@ -29,20 +30,22 @@ const config = {
 app.use(handleResponse);
 app.use(
   cors({
-    credentials: true // request 的 credentials属性表示是否允许其他域发送cookie
+    credentials: true
   })
 );
 app.use(bodyParser());
 app.use(session(config, app));
 
-if (process.env.NODE_ENV === 'development') {
-  const devStatic = require('./util/dev-static');
-  devStatic(app, router);
-} else {
-  const serverEntry = require('../dist/server-home');
-  const template = fs.readFileSync(path.resolve(__dirname, '../dist/homeServer.ejs'), 'utf-8');
-  app.use(serve(path.join(__dirname, '../dist')));
-  router.get('/:home/aa.html', async (ctx, next) => {
+app.use(serve(path.join(__dirname, '../dist')));
+
+for (let i = 0; i < serverRoutes.length; i++) {
+  const item = serverRoutes[i];
+  const serverEntry = require(`../dist/server-${item.name}`);
+  const template = fs.readFileSync(
+    path.resolve(__dirname, `../dist/${item.name}Server.ejs`),
+    'utf-8'
+  );
+  router.get(item.path, async (ctx, next) => {
     try {
       const css = new Set();
       const insertCss = (...styles) => {
