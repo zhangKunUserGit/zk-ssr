@@ -5,7 +5,6 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const merge = require('webpack-merge');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const utils = require('./utils');
@@ -42,7 +41,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
             flexbox: 'no-2009'
           })
         ],
-        sourceMap: true
+        sourceMap: false
       }
     }
   ].filter(Boolean);
@@ -50,7 +49,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
     loaders.push({
       loader: require.resolve(preProcessor),
       options: {
-        sourceMap: true
+        sourceMap: false
       }
     });
   }
@@ -110,13 +109,13 @@ const webpackConfig = merge(baseWebpackConfig, {
                       flexbox: 'no-2009'
                     })
                   ],
-                  sourceMap: true
+                  sourceMap: false
                 }
               },
               {
                 loader: require.resolve('sass-loader'),
                 options: {
-                  sourceMap: true
+                  sourceMap: false
                 }
               }
             ],
@@ -144,7 +143,7 @@ const webpackConfig = merge(baseWebpackConfig, {
           parser: safePostCssParser,
           map: {
             inline: false,
-            annotation: true
+            annotation: false
           }
         }
       })
@@ -157,6 +156,12 @@ const webpackConfig = merge(baseWebpackConfig, {
           chunks: 'all',
           test: /[\\/]node_modules[\\/]/,
           name: 'vendor'
+        },
+        main: {
+          name: 'main',
+          test: /\.scss|css$/,
+          chunks: 'all',
+          enforce: true
         }
       }
     }

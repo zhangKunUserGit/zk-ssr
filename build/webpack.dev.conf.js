@@ -36,7 +36,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
             flexbox: 'no-2009'
           })
         ],
-        sourceMap: true
+        sourceMap: false
       }
     }
   ].filter(Boolean);
@@ -44,7 +44,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
     loaders.push({
       loader: require.resolve(preProcessor),
       options: {
-        sourceMap: true
+        sourceMap: false
       }
     });
   }
@@ -103,13 +103,13 @@ module.exports = merge(baseWebpackConfig, {
                       flexbox: 'no-2009'
                     })
                   ],
-                  sourceMap: true
+                  sourceMap: false
                 }
               },
               {
                 loader: require.resolve('sass-loader'),
                 options: {
-                  sourceMap: true
+                  sourceMap: false
                 }
               }
             ],

@@ -17,7 +17,7 @@ function getWebEntryAndHtmlWebpackPlugin(isProd) {
         result.plugin.push(
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: [route.name, 'vendor'],
+            chunks: [route.name, 'vendor', 'main'],
             filename: `${route.name}Server.ejs`,
             template: path.join(__dirname, '../web/server.template.ejs'),
             minify: {

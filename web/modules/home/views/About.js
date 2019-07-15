@@ -16,7 +16,7 @@ import { Helmet } from 'react-helmet';
     }
   };
 }, s)
-export default class Home extends React.Component {
+export default class About extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,13 +24,13 @@ export default class Home extends React.Component {
     };
   }
   onChangeName = () => {
-    console.log('onChange home');
+    console.log('onChange  about');
     this.setState(
       {
         myName: '111'
       },
       () => {
-        window.location.href = '/about';
+        window.location.href = '/home';
       }
     );
   };
@@ -47,7 +47,7 @@ export default class Home extends React.Component {
           {process.env.CURRENT_SITE}
         </button>
         1111 <span className="text">33e</span>
-        <span className="text-gray">home</span>
+        <span className="text-gray">about</span>
       </div>
     );
   }
