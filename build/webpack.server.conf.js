@@ -5,6 +5,8 @@ const baseWebpackConfig = require('./webpack.base.conf');
 const utils = require('./utils');
 const appEnv = require('./env');
 const env = appEnv.getClientEnvironment('/');
+const routes = require('./routes');
+const serverEntry = routes.getServerEntry();
 
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
@@ -14,9 +16,7 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 const serverWebpackConfig = merge(baseWebpackConfig, {
   mode: 'development',
   target: 'node',
-  entry: {
-    home: path.join(__dirname, '../client/serverHome.js')
-  },
+  entry: serverEntry.entry,
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: 'server-[name].js',

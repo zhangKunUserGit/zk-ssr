@@ -1,7 +1,7 @@
 import React from 'react';
-import bindMethodsHoc from './highOrderComponents/bindMethodsHoc';
-import './base.scss';
-import s from './home.module.scss';
+import bindMethodsHoc from '../../../highOrderComponents/bindMethodsHoc';
+import '../styles/base.scss';
+import s from '../styles/home.module.scss';
 import { Helmet } from 'react-helmet';
 
 @bindMethodsHoc(() => {

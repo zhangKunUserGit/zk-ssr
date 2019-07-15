@@ -1,5 +1,4 @@
 const Koa = require('koa');
-const bootstrapper = require('react-async-bootstrapper');
 const ReactSSR = require('react-dom/server');
 const Helmet = require('react-helmet').default;
 const ejs = require('ejs');
@@ -41,7 +40,7 @@ if (process.env.NODE_ENV === 'development') {
   devStatic(app, router);
 } else {
   const serverEntry = require('../dist/server-home');
-  const template = fs.readFileSync(path.resolve(__dirname, '../dist/serverHome.ejs'), 'utf-8');
+  const template = fs.readFileSync(path.resolve(__dirname, '../dist/homeServer.ejs'), 'utf-8');
   app.use(serve(path.join(__dirname, '../dist')));
   router.get('/:home/aa.html', async (ctx, next) => {
     try {

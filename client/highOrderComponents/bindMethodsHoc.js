@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import withStyles from 'isomorphic-style-loader/withStyles';
 
+// 公共部分，在Node环境中无window document navigator 等对象
+if (typeof window === 'undefined') {
+  global.window = {};
+  global.document = {};
+}
+
 export default function bindMethodsHoc(...params) {
   // 无参数
   if (params.length === 1 && typeof params[0] !== 'function') {
@@ -31,7 +37,6 @@ export default function bindMethodsHoc(...params) {
         }
       }
       render() {
-        console.log(this.props);
         return <WrappedComponent {...this.props} prevState={this.state} {...copyMethods} />;
       }
     }

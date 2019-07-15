@@ -2,7 +2,7 @@ require('babel-polyfill');
 const merge = require('webpack-merge');
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 const baseWebpackConfig = require('./webpack.base.conf');
 const autoprefixer = require('autoprefixer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -10,6 +10,8 @@ const utils = require('./utils');
 const appEnv = require('./env');
 const env = appEnv.getClientEnvironment('/');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
+const routes = require('./routes');
+const clientEntryAndHtmlWebpackPlugin = routes.getClientEntryAndHtmlWebpackPlugin();
 
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
@@ -51,9 +53,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 
 module.exports = merge(baseWebpackConfig, {
   mode: 'development',
-  entry: {
-    home: ['babel-polyfill', path.join(__dirname, '../client/hydrateHome.js')]
-  },
+  entry: clientEntryAndHtmlWebpackPlugin.entry,
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: utils.assetsPath('js/[name].[hash].js'),
@@ -129,11 +129,6 @@ module.exports = merge(baseWebpackConfig, {
       filename: utils.assetsPath('css/[name].[contenthash:12].css'),
       allChunks: true
     }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['home'],
-      filename: 'serverHome.ejs',
-      template: path.join(__dirname, '../client/server.template.ejs')
-    })
+    ...clientEntryAndHtmlWebpackPlugin.plugin
   ]
 });

@@ -100,7 +100,7 @@ module.exports = (app, router) => {
   router.get('/:home/aa.html', async (ctx, next) => {
     console.log(ctx.params);
     console.log(ctx.query.name);
-    const template = await getTemplate('serverHome');
+    const template = await getTemplate('homeServer');
     if (!serverBundleHome) {
       ctx.body = 'waiting for compile';
       return;

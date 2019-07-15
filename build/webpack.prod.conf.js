@@ -16,6 +16,8 @@ const env = appEnv.getClientEnvironment('/');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
+const routes = require('./routes');
+const clientEntryAndHtmlWebpackPlugin = routes.getClientEntryAndHtmlWebpackPlugin(true);
 
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
@@ -57,10 +59,8 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 
 const webpackConfig = merge(baseWebpackConfig, {
   mode: 'production',
-  devtool: '#source-map',
-  entry: {
-    home: ['babel-polyfill', path.join(__dirname, '../client/hydrateHome.js')]
-  },
+  devtool: 'hidden-source-map',
+  entry: clientEntryAndHtmlWebpackPlugin.entry,
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
@@ -174,24 +174,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       filename: utils.assetsPath('css/[name].[contenthash:12].css'),
       allChunks: true
     }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['home', 'vendor'],
-      filename: 'serverHome.ejs',
-      template: path.join(__dirname, '../client/server.template.ejs'),
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true
-      }
-    }),
+    ...clientEntryAndHtmlWebpackPlugin.plugin,
     new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin()
   ],
