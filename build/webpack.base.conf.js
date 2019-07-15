@@ -43,7 +43,7 @@ module.exports = {
     rules: [
       {
         test: /\.(js|mjs|jsx)$/,
-        include: [paths.client, paths.server],
+        include: [paths.web, paths.server],
         enforce: 'pre',
         use: [
           {
@@ -76,7 +76,7 @@ module.exports = {
           },
           {
             test: /\.(js|mjs|jsx)$/,
-            include: [paths.client, paths.server],
+            include: [paths.web, paths.server],
             loader: require.resolve('babel-loader')
           },
           {

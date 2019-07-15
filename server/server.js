@@ -38,7 +38,7 @@ app.use(session(config, app));
 
 app.use(serve(path.join(__dirname, '../dist')));
 
-for (let i = 0; i < serverRoutes.length; i++) {
+for (let i = 0, l = serverRoutes.length; i < l; i++) {
   const item = serverRoutes[i];
   const serverEntry = require(`../dist/server-${item.name}`);
   const template = fs.readFileSync(

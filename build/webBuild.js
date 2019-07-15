@@ -7,7 +7,7 @@ const chalk = require('chalk');
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.prod.conf');
 
-const spinner = ora('building for client production...');
+const spinner = ora('building for web production...');
 spinner.start();
 
 webpack(webpackConfig, (err, stats) => {
@@ -24,9 +24,9 @@ webpack(webpackConfig, (err, stats) => {
   );
 
   if (stats.hasErrors()) {
-    console.log(chalk.red('  Build client failed with errors.\n'));
+    console.log(chalk.red('  Build web failed with errors.\n'));
     process.exit(1);
   }
 
-  console.log(chalk.cyan('  Build client complete.\n'));
+  console.log(chalk.cyan('  Build web complete.\n'));
 });

@@ -8,10 +8,10 @@ const autoprefixer = require('autoprefixer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const utils = require('./utils');
 const appEnv = require('./env');
-const env = appEnv.getClientEnvironment('/');
+const env = appEnv.getWebEnvironment('/');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const routes = require('./routes');
-const clientEntryAndHtmlWebpackPlugin = routes.getClientEntryAndHtmlWebpackPlugin();
+const webEntryAndHtmlWebpackPlugin = routes.getWebEntryAndHtmlWebpackPlugin();
 
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
@@ -53,7 +53,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 
 module.exports = merge(baseWebpackConfig, {
   mode: 'development',
-  entry: clientEntryAndHtmlWebpackPlugin.entry,
+  entry: webEntryAndHtmlWebpackPlugin.entry,
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: utils.assetsPath('js/[name].[hash].js'),
@@ -129,6 +129,6 @@ module.exports = merge(baseWebpackConfig, {
       filename: utils.assetsPath('css/[name].[contenthash:12].css'),
       allChunks: true
     }),
-    ...clientEntryAndHtmlWebpackPlugin.plugin
+    ...webEntryAndHtmlWebpackPlugin.plugin
   ]
 });

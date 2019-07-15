@@ -4,7 +4,7 @@ const path = require('path');
 const baseWebpackConfig = require('./webpack.base.conf');
 const utils = require('./utils');
 const appEnv = require('./env');
-const env = appEnv.getClientEnvironment('/');
+const env = appEnv.getWebEnvironment('/');
 const routes = require('./routes');
 const serverEntry = routes.getServerEntry();
 

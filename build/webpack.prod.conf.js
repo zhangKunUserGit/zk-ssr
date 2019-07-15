@@ -12,12 +12,12 @@ const utils = require('./utils');
 const baseWebpackConfig = require('./webpack.base.conf');
 const appEnv = require('./env');
 process.env.NODE_ENV = 'production';
-const env = appEnv.getClientEnvironment('/');
+const env = appEnv.getWebEnvironment('/');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const routes = require('./routes');
-const clientEntryAndHtmlWebpackPlugin = routes.getClientEntryAndHtmlWebpackPlugin(true);
+const webEntryAndHtmlWebpackPlugin = routes.getWebEntryAndHtmlWebpackPlugin(true);
 
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
@@ -60,7 +60,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 const webpackConfig = merge(baseWebpackConfig, {
   mode: 'production',
   devtool: 'hidden-source-map',
-  entry: clientEntryAndHtmlWebpackPlugin.entry,
+  entry: webEntryAndHtmlWebpackPlugin.entry,
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
@@ -174,7 +174,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       filename: utils.assetsPath('css/[name].[contenthash:12].css'),
       allChunks: true
     }),
-    ...clientEntryAndHtmlWebpackPlugin.plugin,
+    ...webEntryAndHtmlWebpackPlugin.plugin,
     new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin()
   ],

@@ -82,7 +82,7 @@ module.exports = {
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
   // 呢哇
-  client: resolveApp('client'),
+  web: resolveApp('web'),
   server: resolveApp('server')
 };
 

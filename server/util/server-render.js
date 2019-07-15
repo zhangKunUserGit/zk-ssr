@@ -35,7 +35,7 @@ module.exports = async (ctx, next, bundle, template) => {
       }
 
       const state = getStoreState(stores);
-      // 将数据插入到html中，完成client端数据的同步
+      // 将数据插入到html中，完成web端数据的同步
       /**
        * 使用<%%-  %>语法
        * webpack中的html-webpack-plugin插件编译ejs模板时，也是可以识别ejs语法的，所以在webpack编译时就将相应变量插入进去了

@@ -1,17 +1,17 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const appRoutes = require('../client/routes');
+const appRoutes = require('../web/routes');
 
-function getClientEntryAndHtmlWebpackPlugin(isProd) {
+function getWebEntryAndHtmlWebpackPlugin(isProd) {
   const result = {
     entry: {},
     plugin: []
   };
   appRoutes.forEach(route => {
-    if (route.clientUrl) {
+    if (route.webUrl) {
       result.entry[route.name] = [
         'babel-polyfill',
-        path.join(__dirname, `../client/${route.clientUrl}.js`)
+        path.join(__dirname, `../web/${route.webUrl}.js`)
       ];
       if (isProd) {
         result.plugin.push(
@@ -19,7 +19,7 @@ function getClientEntryAndHtmlWebpackPlugin(isProd) {
             inject: true,
             chunks: [route.name, 'vendor'],
             filename: `${route.name}Server.ejs`,
-            template: path.join(__dirname, '../client/server.template.ejs'),
+            template: path.join(__dirname, '../web/server.template.ejs'),
             minify: {
               removeComments: true,
               collapseWhitespace: true,
@@ -40,7 +40,7 @@ function getClientEntryAndHtmlWebpackPlugin(isProd) {
             inject: true,
             chunks: [route.name],
             filename: `${route.name}Server.ejs`,
-            template: path.join(__dirname, '../client/server.template.ejs')
+            template: path.join(__dirname, '../web/server.template.ejs')
           })
         );
       }
@@ -55,14 +55,14 @@ function getServerEntry() {
     plugin: []
   };
   appRoutes.forEach(route => {
-    if (route.clientUrl) {
-      result.entry[route.name] = path.join(__dirname, `../client/${route.serverUrl}.js`);
+    if (route.webUrl) {
+      result.entry[route.name] = path.join(__dirname, `../web/${route.serverUrl}.js`);
     }
   });
   return result;
 }
 
 module.exports = {
-  getClientEntryAndHtmlWebpackPlugin: getClientEntryAndHtmlWebpackPlugin,
+  getWebEntryAndHtmlWebpackPlugin: getWebEntryAndHtmlWebpackPlugin,
   getServerEntry: getServerEntry
 };

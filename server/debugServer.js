@@ -95,10 +95,9 @@ serverCompiler.watch({}, (err, stats, next) => {
     next();
   }
 });
-for (let i = 0; i < serverRoutes.length; i++) {
+for (let i = 0, l = serverRoutes.length; i < l; i++) {
   const item = serverRoutes[i];
   router.get(item.path, async (ctx, next) => {
-    console.log(process.env);
     const template = await getTemplate(`${item.name}Server`);
     const bundlePath = path.join(serverConfig.output.path, `server-${item.name}.js`);
     // 从内存中读取server bundle
@@ -138,6 +137,6 @@ for (let i = 0; i < serverRoutes.length; i++) {
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen(7000, () => {
+app.listen(9090, () => {
   console.log('server is listening at port 6666');
 });

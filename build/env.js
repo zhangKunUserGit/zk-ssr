@@ -23,7 +23,7 @@ function getLocalSiteName() {
   return siteConfig;
 }
 
-function getClientEnvironment(publicUrl) {
+function getWebEnvironment(publicUrl) {
   const raw = Object.keys(process.env)
     .filter(key => REACT_APP.test(key))
     .reduce(
@@ -52,5 +52,5 @@ function getClientEnvironment(publicUrl) {
 }
 
 module.exports = {
-  getClientEnvironment: getClientEnvironment
+  getWebEnvironment: getWebEnvironment
 };
