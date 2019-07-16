@@ -5,7 +5,8 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const merge = require('webpack-merge');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const utils = require('./utils');
 const baseWebpackConfig = require('./webpack.base.conf');
@@ -128,14 +129,38 @@ const webpackConfig = merge(baseWebpackConfig, {
   optimization: {
     minimize: true,
     minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-        uglifyOptions: {
-          compress: true,
-          ecma: 6,
-          mangle: true
+      // new UglifyJsPlugin({
+      //   cache: true,
+      //   parallel: true,
+      //   uglifyOptions: {
+      //     compress: true,
+      //     ecma: 6,
+      //     mangle: true
+      //   },
+      //   sourceMap: true
+      // }),
+      new TerserPlugin({
+        terserOptions: {
+          parse: {
+            ecma: 8
+          },
+          compress: {
+            ecma: 5,
+            warnings: false,
+            comparisons: false,
+            inline: 2
+          },
+          mangle: {
+            safari10: true
+          },
+          output: {
+            ecma: 5,
+            comments: false,
+            ascii_only: true
+          }
         },
+        parallel: true,
+        cache: true,
         sourceMap: true
       }),
       new OptimizeCSSAssetsPlugin({
