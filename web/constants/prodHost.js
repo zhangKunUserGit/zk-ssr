@@ -1,0 +1,28 @@
+const ProdHost = {
+  NNN: '',
+  HPN: 'HondaPartsNow',
+  TPD: 'ToyotaPartsDeal',
+  NPD: 'NissanPartsDeal',
+  GPG: 'GMPartsGiant',
+  FPG: 'FordPartsGiant',
+  MPG: 'MoparPartsGiant',
+  APW: 'AcuraPartsWarehouse',
+  LPN: 'LexusPartsNow',
+  IPD: 'InfinitiPartsDeal',
+  SPD: 'SubaruPartsDeal',
+  HPD: 'HyundaiPartsDeal',
+  KPN: 'KiaPartsNow',
+  FPP: 'FordPartsPrime',
+  MPP: 'MoparPartsPrime',
+  GPP: 'GMPartsPrime',
+  TPP: 'ToyotaPartsPrime',
+  BPP: 'BMWPartsPrime',
+  VWPP: 'VWPartsPrime',
+  MBPP: 'MBPartsPrime',
+  ADPP: 'AudiPartsPrime',
+  MDPP: 'MazdaPartsPrime',
+  MSPP: 'MitsubishiPartsPrime',
+  VPP: 'VolvoPartsPrime',
+  BPD: 'BMWPartsDeal'
+};
+export default ProdHost;

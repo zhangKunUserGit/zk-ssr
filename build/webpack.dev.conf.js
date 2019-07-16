@@ -66,10 +66,28 @@ module.exports = merge(baseWebpackConfig, {
           {
             test: cssRegex,
             exclude: cssModuleRegex,
-            use: getStyleLoaders({
-              importLoaders: 1,
-              sourceMap: false
-            }),
+            use: [
+              {
+                loader: MiniCssExtractPlugin.loader
+              },
+              {
+                loader: require.resolve('css-loader')
+              },
+              {
+                loader: require.resolve('postcss-loader'),
+                options: {
+                  ident: 'postcss',
+                  plugins: () => [
+                    require('postcss-flexbugs-fixes'),
+                    autoprefixer({
+                      overrideBrowserslist: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9'],
+                      flexbox: 'no-2009'
+                    })
+                  ],
+                  sourceMap: false
+                }
+              }
+            ],
             sideEffects: false
           },
           {

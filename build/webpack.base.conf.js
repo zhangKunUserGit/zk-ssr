@@ -93,6 +93,10 @@ module.exports = {
             )
           },
           {
+            test: /\.html$/,
+            use: 'raw-loader' // 把文件内容作为字符串返回
+          },
+          {
             loader: require.resolve('file-loader'),
             exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/, /\.ejs$/, /\.scss$/],
             options: {

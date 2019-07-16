@@ -1,0 +1,28 @@
+const LocalHost = {
+  NNN: '',
+  HPN: 'localhost:8001',
+  TPD: 'localhost:8002',
+  NPD: 'localhost:8003',
+  GPG: 'localhost:8004',
+  FPG: 'localhost:8005',
+  MPG: 'localhost:8006',
+  APW: 'localhost:8007',
+  LPN: 'localhost:8008',
+  IPD: 'localhost:8009',
+  SPD: 'localhost:8010',
+  HPD: 'localhost:8011',
+  KPN: 'localhost:8012',
+  FPP: 'localhost:8014',
+  MPP: 'localhost:8015',
+  GPP: 'localhost:8016',
+  TPP: 'localhost:8017',
+  BPP: 'localhost:8020',
+  VWPP: 'localhost:8021',
+  MBPP: 'localhost:8022',
+  ADPP: 'localhost:8023',
+  MDPP: 'localhost:8024',
+  MSPP: 'localhost:8025',
+  VPP: 'localhost:8026',
+  BPD: 'localhost:8027'
+};
+export default LocalHost;

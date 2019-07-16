@@ -1,0 +1,129 @@
+.table{
+  border-collapse: collapse;
+  border: none;
+  width: 100%;
+  & > thead > tr > th {
+    font-size: .88rem;
+    padding: .35rem .8rem;
+    background-color: #dfdfdf;
+    text-align: left;
+    &:nth-child(3), &:nth-child(4){
+      text-align: center;
+      min-width: 6rem;
+    }
+    &:last-child{
+      text-align: right;
+    }
+  }
+  & > tbody > tr{
+    border-bottom: 2px solid #dfdfdf;
+  }
+  & > tbody > tr > td {
+    vertical-align: top;
+    padding: 1.2rem .8rem 1.2rem .8rem;
+    background-color: #fff;
+    text-align: left;
+    &:nth-child(3), &:nth-child(4){
+      text-align: center;
+    }
+    &:last-child{
+      text-align: right;
+    }
+  }
+  .number{
+    font-size: .9rem;
+    color: #333;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+  .desc{
+    font-weight: bold;
+    font-size: .9em;
+    color: #01579B;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+  .replace{
+    color: #808080;
+    font-size: .8rem;
+    margin: 1rem 0 0 0;
+  }
+  .remove, .update{
+    font-size: .8rem;
+    color: #1372D2;
+    cursor: pointer;
+    display: block;
+    margin: 1rem 0 0 0;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+  .remove{
+    display: inline-block;
+  }
+  .update{
+    margin: .6rem 0 0 0;
+    font-size: .88rem;
+    text-decoration: underline;
+  }
+  .price{
+    font-size: .83rem;
+  }
+  .qtyInput{
+    width: 6rem;
+    padding-top: .8rem;
+    :global{
+      .form-group{
+        margin-bottom: 0;
+      }
+    }
+  }
+  .subtotal{
+    font-size: 1rem;
+    display: block;
+  }
+}
+
+body .dropdown{
+  min-width: 4rem;
+  text-align: center;
+  :global{
+    .ab-select-column-wrap{
+      & > li{
+        padding-left: .2rem;
+        padding-right: .2rem;
+      }
+    }
+  }
+}
+
+
+@media only screen and (max-width: 767px) {
+  .table {
+    & > tbody > tr{
+      border-bottom: 1px solid #dfdfdf;
+      &:first-child{
+        border-top: 1px solid #dfdfdf;
+      }
+    }
+    & > tbody > tr > td {
+      padding: .8rem 0;
+    }
+    .desc{
+      display: inline-block;
+      padding-top: .4rem;
+    }
+    .qtyInput{
+      width: 4rem;
+      text-align: center;
+      display: inline-block;
+      :global{
+        .form-group{
+          width: 100%;
+        }
+      }
+    }
+  }
+}

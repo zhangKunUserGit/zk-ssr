@@ -6,5 +6,9 @@ module.exports = [
   {
     name: 'about',
     path: '/about'
+  },
+  {
+    name: 'shoppingCart',
+    path: '/shopping/cart'
   }
 ];

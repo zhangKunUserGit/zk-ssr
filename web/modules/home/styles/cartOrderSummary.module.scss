@@ -1,0 +1,108 @@
+.wrap{
+  width: 100%;
+  border: 1px solid #D0D0D0;
+  margin-bottom: .5rem;
+  .top{
+    background-color: #F4F4F4;
+    padding: 1.2rem 1rem 1.8rem 1rem;
+  }
+  .subtotal{
+    margin-bottom: 1.1rem;
+    font-size: 1.2rem;
+  }
+  .checkoutBtn, .paypalBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 2px;
+  }
+  .checkoutBtn{
+    font-size: 1rem;
+    img{
+      padding-right: .5rem;
+
+    }
+  }
+  .paypalBtn{
+    font-size: .83rem;
+    color: #1050A0;
+    img{
+      padding-left: .5rem;
+    }
+  }
+  .or{
+    color: #808080;
+    font-size: 1rem;
+    margin: 0.75rem 0;
+    text-align: center;
+  }
+  .bottom{
+    padding: 1.4rem 1rem;
+  }
+  .collapseTitle{
+    cursor: pointer;
+    .angle{
+      width: 8px;
+      height: 4px;
+      background: url('../imgs/angle_upward.png') center center no-repeat;
+      &.visible{
+        background-image: url('../imgs/angle_downward.png');
+      }
+    }
+  }
+  .shippingAndTax{
+    font-size: .9rem;
+  }
+  .shipping{
+    font-size: .82rem;
+  }
+  .city{
+    color: #1372D2;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .getEstimate{
+    padding: .9rem 0;
+    margin-bottom: 0;
+    :global{
+      .form-control, .btn-default{
+        padding: .3rem .5rem;
+        font-size: .85rem;
+      }
+      .form-control{
+        margin-right: .5rem;
+      }
+      .btn-default{
+        margin-left: .5rem;
+        font-weight: normal;
+      }
+    }
+  }
+  .summaryTitle{
+    padding-top: .9rem;
+    display: block;
+  }
+  .total{
+    font-size: .83rem;
+  }
+  .tip{
+    font-size: .8rem;
+    color: #808080;
+    padding-top: .5rem;
+    margin: 0;
+  }
+  .errorTip{
+    margin: 0;
+  }
+}
+
+
+@media only screen and (max-width: 767px) {
+  .wrap{
+    .total{
+      font-size: 1rem;
+    }
+  }
+}
