@@ -33,7 +33,7 @@ function getWebEnvironment(publicUrl) {
       },
       Object.assign(
         {
-          NODE_ENV: process.env.NODE_ENV || 'development',
+          NODE_ENV: process.env.NODE_ENV || 'production',
           PUBLIC_URL: publicUrl
         },
         appConfig,

@@ -38,7 +38,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 };
 module.exports = {
   resolve: {
-    extensions: ['.js', '.json', '.jsx', '.less']
+    extensions: ['.js', '.scss']
   },
   module: {
     rules: [
@@ -77,7 +77,7 @@ module.exports = {
           },
           {
             test: /\.(js|mjs|jsx)$/,
-            include: [paths.web, paths.server],
+            // include: [paths.web, paths.server],
             use: ['happypack/loader?id=babel']
           },
           {

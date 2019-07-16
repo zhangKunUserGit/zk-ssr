@@ -13,7 +13,7 @@
     "web:build": "node build/webBuild.js",
     "server:build": "node build/serverBuild.js",
     "build": "npm run web:build && npm run server:build",
-    "build:dev": "npm run clear && cross-env REACT_APP_ENV=dev npm run build",
+    "build:dev": "npm run clear && cross-env REACT_APP_ENV=dev& cross-env NODE_ENV=production npm run build",
     "build:test": "npm run clear && cross-env REACT_APP_ENV=test npm run build",
     "build:move": "npm run clear && cross-env REACT_APP_ENV=move npm run build",
     "build:prod": "npm run clear && cross-env REACT_APP_ENV=prod npm run build",

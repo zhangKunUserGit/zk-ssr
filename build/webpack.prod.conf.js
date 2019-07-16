@@ -179,9 +179,9 @@ const webpackConfig = merge(baseWebpackConfig, {
       filename: utils.assetsPath('css/[name].[contenthash:12].css'),
       allChunks: true
     }),
-    ...webEntryAndHtmlWebpackPlugin.plugin,
-    new webpack.HashedModuleIdsPlugin(),
-    new webpack.optimize.ModuleConcatenationPlugin()
+    ...webEntryAndHtmlWebpackPlugin.plugin
+    // new webpack.HashedModuleIdsPlugin(),
+    // new webpack.optimize.ModuleConcatenationPlugin()
   ],
   performance: false
 });
