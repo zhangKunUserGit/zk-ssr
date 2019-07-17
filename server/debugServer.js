@@ -14,6 +14,9 @@ const MemoryFs = require('memory-fs');
 const proxy = require('koa-proxies');
 const serverConfig = require('../build/webpack.server.conf');
 const serverRoutes = require('./routes/index');
+const { getCookie } = require('./utils/get');
+const { getCurrentSite } = require('./utils/site');
+const { getSiteInfo } = require('./constants/sites');
 
 const app = new Koa();
 app.keys = ['koa ssr demo'];
@@ -96,34 +99,37 @@ serverCompiler.watch({}, (err, stats, next) => {
 for (let i = 0, l = serverRoutes.length; i < l; i++) {
   const item = serverRoutes[i];
   router.get(item.path, async (ctx, next) => {
-    const template = await getTemplate(`${item.name}Server`);
-    const bundlePath = path.join(serverConfig.output.path, `server-${item.name}.js`);
-    // 从内存中读取server bundle
-    // 读出的bundle是为string类型，并不是js中可以使用的模块
-    const bundle = mfs.readFileSync(bundlePath, 'utf-8');
-    const mHome = getModuleFromString(bundle, `server-${item.name}.js`);
-    const serverBundleHome = mHome.exports;
-    if (!serverBundleHome) {
-      ctx.body = 'waiting for compile';
+    let template, serverBundle;
+    try {
+      template = await getTemplate(`${item.name}Server`);
+      const bundlePath = path.join(serverConfig.output.path, `server-${item.name}.js`);
+      // 从内存中读取server bundle
+      // 读出的bundle是为string类型，并不是js中可以使用的模块
+      const bundle = mfs.readFileSync(bundlePath, 'utf-8');
+      const app = getModuleFromString(bundle, `server-${item.name}.js`);
+      serverBundle = app.exports;
+    } catch (e) {}
+    if (!serverBundle) {
+      ctx.body = 'waiting for compile, please refresh again.';
       return;
     }
     try {
-      const css = new Set();
-      const insertCss = (...styles) => {
-        styles.forEach(style => css.add(style._getCss()));
-      };
-      const createApp = serverBundleHome.AppComponent;
-      const setPrevState = serverBundleHome.setPrevState;
-      const info = await setPrevState();
-      const appTemplate = createApp(info, insertCss);
+      const currentSite = getCurrentSite(ctx.headers.host);
+      const createApp = serverBundle.AppComponent;
+      const setPrevState = serverBundle.setPrevState;
+      const info = await setPrevState({
+        site: currentSite,
+        siteInfo: getSiteInfo(currentSite),
+        cookie: getCookie(ctx.headers.cookie)
+      });
+      const appTemplate = createApp(info);
       const appString = ReactSSR.renderToString(appTemplate);
       const helmet = Helmet.renderStatic();
       ctx.body = ejs.render(template, {
         initialState: serialize(info),
         appString,
         title: helmet.title.toString(),
-        meta: helmet.meta.toString(),
-        style: [...css].join('')
+        meta: helmet.meta.toString()
       });
     } catch (e) {
       console.log(e);
@@ -136,5 +142,5 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 app.listen(9090, () => {
-  console.log('server is listening at port 6666');
+  console.log('server is listening at port 9090');
 });

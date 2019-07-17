@@ -1,10 +1,5 @@
 import React from 'react';
-import StyleContext from 'isomorphic-style-loader/StyleContext';
 import About from '../views/About';
 
-export const AppComponent = (prevState, insertCss) => (
-  <StyleContext.Provider value={{ insertCss }}>
-    <About.AppComponent prevState={prevState} />
-  </StyleContext.Provider>
-);
+export const AppComponent = prevState => <About.AppComponent prevState={prevState} />;
 export const setPrevState = About.setPrevState;

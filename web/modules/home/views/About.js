@@ -1,7 +1,8 @@
 import React from 'react';
 import bindMethodsHoc from '../../../highOrderComponents/bindMethodsHoc';
 import '../styles/base.scss';
-import s from '../styles/home.module.scss';
+import '../styles/test.scss';
+import '../styles/home.scss';
 import { Helmet } from 'react-helmet';
 
 @bindMethodsHoc(() => {
@@ -15,7 +16,7 @@ import { Helmet } from 'react-helmet';
       return info;
     }
   };
-}, s)
+})
 export default class About extends React.Component {
   constructor(props) {
     super(props);
@@ -41,7 +42,7 @@ export default class About extends React.Component {
           <meta charSet="utf-8" />
           <title>My Tit111le</title>
         </Helmet>
-        <button onClick={this.onChangeName} className={s.btn}>
+        <button onClick={this.onChangeName} className="btn">
           btnbtn {this.state.myName}
           {process.env.ApiServiceUrl}
           {process.env.CURRENT_SITE}

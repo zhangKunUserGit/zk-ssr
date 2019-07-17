@@ -11,6 +11,9 @@ const bodyParser = require('koa-bodyparser');
 const session = require('koa-session');
 const cors = require('koa2-cors');
 const serverRoutes = require('./routes/index');
+const { getCookie } = require('./utils/get');
+const { getCurrentSite } = require('./utils/site');
+const { getSiteInfo } = require('./constants/sites');
 
 const app = new Koa();
 app.keys = ['koa ssr demo'];
@@ -45,14 +48,15 @@ for (let i = 0, l = serverRoutes.length; i < l; i++) {
   );
   router.get(item.path, async (ctx, next) => {
     try {
-      const css = new Set();
-      const insertCss = (...styles) => {
-        styles.forEach(style => css.add(style._getCss()));
-      };
+      const currentSite = getCurrentSite(ctx.headers.host);
       const createApp = serverEntry.AppComponent;
       const setPrevState = serverEntry.setPrevState;
-      const info = await setPrevState();
-      const appTemplate = createApp(info, insertCss);
+      const info = await setPrevState({
+        site: currentSite,
+        siteInfo: getSiteInfo(currentSite),
+        cookie: getCookie(ctx.headers.cookie)
+      });
+      const appTemplate = createApp(info);
       const appString = ReactSSR.renderToString(appTemplate);
       const helmet = Helmet.renderStatic();
       ctx.body = ejs.render(template, {
@@ -60,8 +64,7 @@ for (let i = 0, l = serverRoutes.length; i < l; i++) {
         appString,
         title: helmet.title.toString(),
         meta: helmet.meta.toString(),
-        link: helmet.link.toString(),
-        style: [...css].join('')
+        link: helmet.link.toString()
       });
     } catch (e) {
       console.log(e);

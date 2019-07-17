@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import s from '../styles/cartOrderSummary.module.scss';
+import s from '../styles/cartOrderSummary.scss';
 import { isPrime } from '../../../utils/site';
 
 export default class CartOrderSummary extends React.Component {

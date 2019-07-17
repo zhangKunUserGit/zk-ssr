@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import s from '../styles/shoppingList.module.scss';
+import s from '../styles/shoppingList.scss';
 import Select from '../../../components/base/Select';
 import QuantityOptions from '../constants/quantityOptions';
 import InputNumber from '../../../components/base/InputNumber';
