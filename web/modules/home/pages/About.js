@@ -3,13 +3,18 @@ import bindMethod from '../../../highOrderComponents/bindMethod';
 import '../styles/base.scss';
 import '../styles/test.scss';
 import '../styles/home.scss';
-import { Helmet } from 'react-helmet';
 
 @bindMethod(() => {
   return {
     async setPrevState(self) {
       const info = await self.getMyName();
-      return info;
+      return {
+        SEO: {
+          title: 'my title',
+          description: 'description,description'
+        },
+        info
+      };
     },
     async getMyName() {
       const info = await { myName: 'zhangkun' };
@@ -38,10 +43,6 @@ export default class About extends React.Component {
   render() {
     return (
       <div>
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>My Tit111le</title>
-        </Helmet>
         <button onClick={this.onChangeName} className="btn">
           btnbtn {this.state.myName}
           {process.env.ApiServiceUrl}

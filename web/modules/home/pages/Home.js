@@ -2,7 +2,6 @@ import React from 'react';
 import bindMethod from '../../../highOrderComponents/bindMethod';
 import '../styles/base.scss';
 import '../styles/home.scss';
-import { Helmet } from 'react-helmet';
 
 @bindMethod(() => {
   return {
@@ -37,10 +36,6 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>My Tit111le</title>
-        </Helmet>
         <button onClick={this.onChangeName} className="btn">
           btnbtn {this.state.myName}
           {process.env.ApiServiceUrl}

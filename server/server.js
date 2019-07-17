@@ -1,6 +1,5 @@
 const Koa = require('koa');
 const ReactSSR = require('react-dom/server');
-const Helmet = require('react-helmet').default;
 const ejs = require('ejs');
 const serialize = require('serialize-javascript');
 const path = require('path');
@@ -58,13 +57,12 @@ for (let i = 0, l = serverRoutes.length; i < l; i++) {
       });
       const appTemplate = createApp(info);
       const appString = ReactSSR.renderToString(appTemplate);
-      const helmet = Helmet.renderStatic();
+      const seo = info.SEO || {};
       ctx.body = ejs.render(template, {
         initialState: serialize(info),
         appString,
-        title: helmet.title.toString(),
-        meta: helmet.meta.toString(),
-        link: helmet.link.toString()
+        title: seo.title ? `<title>${seo.title}</title>` : '',
+        meta: seo.description ? `<meta name="description" content="${seo.description}">` : ''
       });
     } catch (e) {
       console.log(e);
