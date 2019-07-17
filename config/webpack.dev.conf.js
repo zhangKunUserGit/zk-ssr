@@ -54,7 +54,7 @@ module.exports = merge(baseWebpackConfig, {
   mode: 'development',
   entry: webEntryAndHtmlWebpackPlugin.entry,
   output: {
-    path: path.resolve(__dirname, '../dist'),
+    path: path.resolve(__dirname, '../build'),
     filename: utils.assetsPath('js/[name].[hash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
     publicPath: '/public/'

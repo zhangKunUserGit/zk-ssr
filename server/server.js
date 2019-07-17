@@ -37,13 +37,13 @@ app.use(
 app.use(bodyParser());
 app.use(session(config, app));
 
-app.use(serve(path.join(__dirname, '../dist')));
+app.use(serve(path.join(__dirname, '../build')));
 
 for (let i = 0, l = serverRoutes.length; i < l; i++) {
   const item = serverRoutes[i];
-  const serverEntry = require(`../dist/server-${item.name}`);
+  const serverEntry = require(`../build/server-${item.name}`);
   const template = fs.readFileSync(
-    path.resolve(__dirname, `../dist/${item.name}Server.ejs`),
+    path.resolve(__dirname, `../build/${item.name}Server.ejs`),
     'utf-8'
   );
   router.get(item.path, async (ctx, next) => {

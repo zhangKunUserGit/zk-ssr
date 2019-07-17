@@ -18,7 +18,7 @@ const serverWebpackConfig = merge(baseWebpackConfig, {
   target: 'node',
   entry: serverEntry.entry,
   output: {
-    path: path.resolve(__dirname, '../dist'),
+    path: path.resolve(__dirname, '../build'),
     filename: 'server-[name].js',
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
     publicPath: '/public/',

@@ -62,7 +62,7 @@ const webpackConfig = merge(baseWebpackConfig, {
   devtool: 'hidden-source-map',
   entry: webEntryAndHtmlWebpackPlugin.entry,
   output: {
-    path: path.resolve(__dirname, '../dist'),
+    path: path.resolve(__dirname, '../build'),
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
     publicPath: '/'
@@ -203,7 +203,8 @@ const webpackConfig = merge(baseWebpackConfig, {
         main: {
           name: 'main',
           test: /\.scss|css$/,
-          chunks: 'all',
+          chunks: 'initial',
+          minChunks: 2,
           enforce: true
         }
       }
