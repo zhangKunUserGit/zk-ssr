@@ -17,8 +17,10 @@
     "build:test": "npm run clear && cross-env REACT_APP_ENV=test npm run build",
     "build:move": "npm run clear && cross-env REACT_APP_ENV=move npm run build",
     "build:prod": "npm run clear && cross-env REACT_APP_ENV=prod npm run build",
-    "server:start": "pm2 startOrReload ecosystem.config.js --env production",
-    "server:reload": "pm2 reload ecosystem.config.js --env production",
+    "server:start:dev": "pm2 startOrReload ecosystem.config.js --env dev",
+    "server:start:test": "pm2 startOrReload ecosystem.config.js --env test",
+    "server:start:move": "pm2 startOrReload ecosystem.config.js --env move",
+    "server:start:prod": "pm2 startOrReload ecosystem.config.js --env prod",
     "server:stop": "pm2 stop ecosystem.config.js"
   },
   "browserslist": [

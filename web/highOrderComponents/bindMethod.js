@@ -6,7 +6,7 @@ if (typeof window === 'undefined') {
   global.document = {};
 }
 
-export default function bindMethodsHoc(...params) {
+export default function bindMethod(...params) {
   // 无参数
   if (params.length === 1 && typeof params[0] !== 'function') {
     return <div>1111</div>;

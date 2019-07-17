@@ -1,11 +1,11 @@
 import React from 'react';
-import bindMethodsHoc from '../../../highOrderComponents/bindMethodsHoc';
+import bindMethod from '../../../highOrderComponents/bindMethod';
 import '../styles/base.scss';
 import '../styles/test.scss';
 import '../styles/home.scss';
 import { Helmet } from 'react-helmet';
 
-@bindMethodsHoc(() => {
+@bindMethod(() => {
   return {
     async setPrevState(self) {
       const info = await self.getMyName();
@@ -45,7 +45,6 @@ export default class About extends React.Component {
         <button onClick={this.onChangeName} className="btn">
           btnbtn {this.state.myName}
           {process.env.ApiServiceUrl}
-          {process.env.CURRENT_SITE}
         </button>
         1111 <span className="text">33e</span>
         <span className="text-gray">about</span>

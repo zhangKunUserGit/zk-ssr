@@ -1,5 +1,5 @@
 import React from 'react';
 import { hydrate } from 'react-dom';
-import About from '../views/About';
+import About from '../pages/About';
 
 hydrate(<About.AppComponent />, document.getElementById('root'));

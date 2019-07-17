@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const appRoutes = require('../web/routes');
+const appRoutes = require('../server/routes/index');
 
 function getWebEntryAndHtmlWebpackPlugin(isProd) {
   const result = {

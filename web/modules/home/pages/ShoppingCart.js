@@ -2,9 +2,9 @@ import React from 'react';
 import '../styles/base.scss';
 import '../styles/shoppingCart.scss';
 // import { getCartDetail } from '../api';
-import bindMethodsHoc from '../../../highOrderComponents/bindMethodsHoc';
+import bindMethod from '../../../highOrderComponents/bindMethod';
 
-@bindMethodsHoc(() => {
+@bindMethod(() => {
   return {
     async setPrevState(self) {
       const data = await self.getShoppingDetail();

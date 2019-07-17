@@ -19,8 +19,21 @@ module.exports = {
       env: {
         NODE_ENV: 'development'
       },
-      env_production: {
-        NODE_ENV: 'production'
+      env_dev: {
+        NODE_ENV: 'production',
+        REACT_APP_ENV: 'dev'
+      },
+      env_test: {
+        NODE_ENV: 'production',
+        REACT_APP_ENV: 'test'
+      },
+      env_move: {
+        NODE_ENV: 'production',
+        REACT_APP_ENV: 'move'
+      },
+      env_prod: {
+        NODE_ENV: 'production',
+        REACT_APP_ENV: 'prod'
       }
     }
   ],

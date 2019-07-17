@@ -1,10 +1,10 @@
 import React from 'react';
-import bindMethodsHoc from '../../../highOrderComponents/bindMethodsHoc';
+import bindMethod from '../../../highOrderComponents/bindMethod';
 import '../styles/base.scss';
 import '../styles/home.scss';
 import { Helmet } from 'react-helmet';
 
-@bindMethodsHoc(() => {
+@bindMethod(() => {
   return {
     async setPrevState(self, params) {
       const info = await self.getMyName();
